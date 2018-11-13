@@ -1,1 +1,0 @@
-# CS267A_Probabilistic_Database
