@@ -41,7 +41,6 @@ def main(argv):
     for table in tables:
         read_table(table)
 
-    print database
 
 if __name__ == "__main__":
    main(sys.argv[1:])
