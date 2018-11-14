@@ -1,5 +1,6 @@
 import sys, getopt
-
+import pandas as pd
+import numpy as np
 
 database = dict()
 #
@@ -8,9 +9,19 @@ database = dict()
 #
 
 def read_table(table):
-    fd = open(table, "r")
-    table_name = fd[0]
-    print table_name
+    file = open(table, "r")
+    lines = file.readlines()
+    lines = [line.replace("\n", "") for line in lines]
+    lines = [line.strip() for line in lines]
+    lines = [line.split(',') for line in lines]
+    table_name = lines[0][0]
+    data = np.array(lines[1:])
+    columns = []
+    for i in xrange(data.shape[1] - 1):
+        columns.append('Var' + str(i+1))
+    columns.append('Prob')
+    df = pd.DataFrame(data = data, columns = columns)
+    print df
 
 
 def main(argv):
@@ -31,8 +42,8 @@ def main(argv):
             tables.append(arg)
     print 'Input query file is', queries
     print 'Input table file is', tables
-
-    read_table(tables[0])
+    for table in tables:
+        read_table(table)
 
 if __name__ == "__main__":
    main(sys.argv[1:])
