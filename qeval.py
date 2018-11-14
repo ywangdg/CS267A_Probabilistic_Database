@@ -3,10 +3,6 @@ import pandas as pd
 import numpy as np
 
 database = dict()
-#
-# def generate_table(tables):
-#     for table in tables:
-#
 
 def read_table(table):
     file = open(table, "r")
@@ -21,7 +17,7 @@ def read_table(table):
         columns.append('Var' + str(i+1))
     columns.append('Prob')
     df = pd.DataFrame(data = data, columns = columns)
-    print df
+    database[table_name] = df
 
 
 def main(argv):
@@ -44,6 +40,8 @@ def main(argv):
     print 'Input table file is', tables
     for table in tables:
         read_table(table)
+
+    print database
 
 if __name__ == "__main__":
    main(sys.argv[1:])
