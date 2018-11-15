@@ -1,8 +1,16 @@
 import sys, getopt
 import pandas as pd
 import numpy as np
+import query
 
 database = dict()
+
+def parse_query(query):
+    file = open(query, "r")
+    lines = file.readlines()
+    sentence = lines[0]
+    sentence.strip().split("||")
+    print sentence.strip().split("||")
 
 def read_table(table):
     file = open(table, "r")
@@ -40,6 +48,11 @@ def main(argv):
     print 'Input table file is', tables
     for table in tables:
         read_table(table)
+
+    parse_query(queries[2])
+
+
+
 
 
 if __name__ == "__main__":
