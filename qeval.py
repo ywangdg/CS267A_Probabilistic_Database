@@ -1,6 +1,8 @@
-import sys, getopt
-import pandas as pd
+import getopt
+import sys
+
 import numpy as np
+import pandas as pd
 import query
 
 database = dict()
