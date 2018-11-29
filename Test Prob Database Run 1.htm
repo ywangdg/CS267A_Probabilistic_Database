@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- saved from url=(0130)http://localhost:8889/nbconvert/html/Documents/CS267A_Probabilistic_Database/Test%20Prob%20Database%20Run%201.ipynb?download=false -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html>
+<head><meta charset="utf-8" />
 
 <title>Test Prob Database Run 1</title>
 
-<script src="./Test Prob Database Run 1_files/require.min.js"></script>
-<script src="./Test Prob Database Run 1_files/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
 
@@ -13085,13 +13085,13 @@ div#notebook {
 </style>
 
 <!-- Custom stylesheet, it must be in the same directory as the html file -->
-<link rel="stylesheet" href="./Test Prob Database Run 1_files/custom.css">
+<link rel="stylesheet" href="custom.css">
 
 <!-- Loading mathjax macro -->
 <!-- Load mathjax -->
-    <script src="./Test Prob Database Run 1_files/MathJax.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
     <!-- MathJax configuration -->
-    <script type="text/x-mathjax-config;executed=true">
+    <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         tex2jax: {
             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
@@ -13108,103 +13108,8 @@ div#notebook {
         }
     });
     </script>
-    <!-- End of mathjax configuration --><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
-.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
-.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
-.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
-.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
-</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
-#MathJax_About.MathJax_MousePost {outline: none}
-.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
-.MathJax_MenuItem {padding: 1px 2em; background: transparent}
-.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
-.MathJax_MenuActive .MathJax_MenuArrow {color: white}
-.MathJax_MenuArrow.RTL {left: .5em; right: auto}
-.MathJax_MenuCheck {position: absolute; left: .7em}
-.MathJax_MenuCheck.RTL {right: .7em; left: auto}
-.MathJax_MenuRadioCheck {position: absolute; left: .7em}
-.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
-.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
-.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
-.MathJax_MenuDisabled {color: GrayText}
-.MathJax_MenuActive {background-color: #606872; color: white}
-.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
-.MathJax_ContextMenu:focus {outline: none}
-.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
-#MathJax_AboutClose {top: .2em; right: .2em}
-.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
-.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
-.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
-.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
-.MathJax_MenuClose:hover span {background-color: #CCC!important}
-.MathJax_MenuClose:hover:focus {outline: none}
-</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
-</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
-.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
-</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
-#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
-#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
-#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
-</style><style type="text/css">.MathJax_Preview {color: #888}
-#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
-#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
-.MathJax_Error {color: #CC0000; font-style: italic}
-</style><style type="text/css">.MJXp-script {font-size: .8em}
-.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
-.MJXp-bold {font-weight: bold}
-.MJXp-italic {font-style: italic}
-.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
-.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
-.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
-.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
-.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
-.MJXp-largeop {font-size: 150%}
-.MJXp-largeop.MJXp-int {vertical-align: -.2em}
-.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
-.MJXp-display {display: block; text-align: center; margin: 1em 0}
-.MJXp-math span {display: inline-block}
-.MJXp-box {display: block!important; text-align: center}
-.MJXp-box:after {content: " "}
-.MJXp-rule {display: block!important; margin-top: .1em}
-.MJXp-char {display: block!important}
-.MJXp-mo {margin: 0 .15em}
-.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
-.MJXp-denom {display: inline-table!important; width: 100%}
-.MJXp-denom > * {display: table-row!important}
-.MJXp-surd {vertical-align: top}
-.MJXp-surd > * {display: block!important}
-.MJXp-script-box > *  {display: table!important; height: 50%}
-.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
-.MJXp-script-box > *:last-child > * {vertical-align: bottom}
-.MJXp-script-box > * > * > * {display: block!important}
-.MJXp-mphantom {visibility: hidden}
-.MJXp-munderover {display: inline-table!important}
-.MJXp-over {display: inline-block!important; text-align: center}
-.MJXp-over > * {display: block!important}
-.MJXp-munderover > * {display: table-row!important}
-.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
-.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
-.MJXp-mtr {display: table-row!important}
-.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
-.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
-.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
-.MJXp-mlabeledtr {display: table-row!important}
-.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
-.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
-.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
-.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
-.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
-.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
-.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
-.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
-.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
-.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
-.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
-.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
-.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
-.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
-</style></head>
-<body style=""><div id="MathJax_Message" style="display: none;"></div>
+    <!-- End of mathjax configuration --></head>
+<body>
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
@@ -13224,31 +13129,31 @@ div#notebook {
 
 
 <span class="k">def</span> <span class="nf">read_table</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
-    <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
+    <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
     <span class="n">table_name</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">'table data'</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;table data&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
     <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'Var'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
-    <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'Prob'</span><span class="p">)</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Var&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Prob&#39;</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span><span class="p">)</span>
     <span class="n">database</span><span class="p">[</span><span class="n">table_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">'dataframe'</span><span class="p">,</span><span class="n">df</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;dataframe&#39;</span><span class="p">,</span><span class="n">df</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">parse_query</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
-    <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
+    <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
     <span class="n">sentence</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"||"</span><span class="p">)</span>
+    <span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;||&quot;</span><span class="p">)</span>
     
-    <span class="k">print</span> <span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"||"</span><span class="p">)</span>
-    <span class="n">queryline</span><span class="o">=</span><span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"||"</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;||&quot;</span><span class="p">)</span>
+    <span class="n">queryline</span><span class="o">=</span><span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;||&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13261,7 +13166,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[42]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">tables</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"t1.txt"</span><span class="p">,</span><span class="s2">"t2.txt"</span><span class="p">,</span><span class="s2">"t3.txt"</span><span class="p">]</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">tables</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;t1.txt&quot;</span><span class="p">,</span><span class="s2">&quot;t2.txt&quot;</span><span class="p">,</span><span class="s2">&quot;t3.txt&quot;</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">:</span>
     <span class="n">read_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 </pre></div>
@@ -13280,26 +13185,26 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>('table data', array([['0', '0.7'],
-       ['1', '0.8'],
-       ['2', '0.6']], dtype='|S3'))
-('dataframe',   Var1 Prob
+<pre>(&#39;table data&#39;, array([[&#39;0&#39;, &#39;0.7&#39;],
+       [&#39;1&#39;, &#39;0.8&#39;],
+       [&#39;2&#39;, &#39;0.6&#39;]], dtype=&#39;|S3&#39;))
+(&#39;dataframe&#39;,   Var1 Prob
 0    0  0.7
 1    1  0.8
 2    2  0.6)
-('table data', array([['0', '0.7'],
-       ['1', '0.3'],
-       ['2', '0.5']], dtype='|S3'))
-('dataframe',   Var1 Prob
+(&#39;table data&#39;, array([[&#39;0&#39;, &#39;0.7&#39;],
+       [&#39;1&#39;, &#39;0.3&#39;],
+       [&#39;2&#39;, &#39;0.5&#39;]], dtype=&#39;|S3&#39;))
+(&#39;dataframe&#39;,   Var1 Prob
 0    0  0.7
 1    1  0.3
 2    2  0.5)
-('table data', array([['0', '0', '0.8'],
-       ['0', '1', '0.4'],
-       ['0', '2', '0.5'],
-       ['1', '2', '0.6'],
-       ['2', '2', '0.9']], dtype='|S3'))
-('dataframe',   Var1 Var2 Prob
+(&#39;table data&#39;, array([[&#39;0&#39;, &#39;0&#39;, &#39;0.8&#39;],
+       [&#39;0&#39;, &#39;1&#39;, &#39;0.4&#39;],
+       [&#39;0&#39;, &#39;2&#39;, &#39;0.5&#39;],
+       [&#39;1&#39;, &#39;2&#39;, &#39;0.6&#39;],
+       [&#39;2&#39;, &#39;2&#39;, &#39;0.9&#39;]], dtype=&#39;|S3&#39;))
+(&#39;dataframe&#39;,   Var1 Var2 Prob
 0    0    0  0.8
 1    0    1  0.4
 2    0    2  0.5
@@ -13318,7 +13223,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[37]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span>    <span class="n">queries</span> <span class="o">=</span> <span class="s2">"query1.txt"</span>
+<div class=" highlight hl-ipython2"><pre><span></span>    <span class="n">queries</span> <span class="o">=</span> <span class="s2">&quot;query1.txt&quot;</span>
     <span class="n">parse_query</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span>
 </pre></div>
 
@@ -13336,7 +13241,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>['R(x1,y1),Q(x1)']
+<pre>[&#39;R(x1,y1),Q(x1)&#39;]
 </pre>
 </div>
 </div>
@@ -13350,14 +13255,14 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[40]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span>    <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"t3.txt"</span> <span class="p">,</span><span class="s2">"r"</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span>    <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;t3.txt&quot;</span> <span class="p">,</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
     <span class="n">table_name</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">'table data'</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;table data&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13374,11 +13279,11 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>('table data', array([['0', '0', '0.8'],
-       ['0', '1', '0.4'],
-       ['0', '2', '0.5'],
-       ['1', '2', '0.6'],
-       ['2', '2', '0.9']], dtype='|S3'))
+<pre>(&#39;table data&#39;, array([[&#39;0&#39;, &#39;0&#39;, &#39;0.8&#39;],
+       [&#39;0&#39;, &#39;1&#39;, &#39;0.4&#39;],
+       [&#39;0&#39;, &#39;2&#39;, &#39;0.5&#39;],
+       [&#39;1&#39;, &#39;2&#39;, &#39;0.6&#39;],
+       [&#39;2&#39;, &#39;2&#39;, &#39;0.9&#39;]], dtype=&#39;|S3&#39;))
 </pre>
 </div>
 </div>
@@ -13409,13 +13314,13 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{'Q':   Var1 Prob
+<pre>{&#39;Q&#39;:   Var1 Prob
 0    0  0.7
 1    1  0.3
-2    2  0.5, 'P':   Var1 Prob
+2    2  0.5, &#39;P&#39;:   Var1 Prob
 0    0  0.7
 1    1  0.8
-2    2  0.6, 'R':   Var1 Var2 Prob
+2    2  0.6, &#39;R&#39;:   Var1 Var2 Prob
 0    0    0  0.8
 1    0    1  0.4
 2    0    2  0.5
@@ -13434,7 +13339,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[44]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">'Q'</span><span class="p">])</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13468,7 +13373,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[45]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">'P'</span><span class="p">])</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13502,7 +13407,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[56]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="s2">"Prob"</span><span class="p">]</span><span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="s2">"Prob"</span><span class="p">])</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="s2">&quot;Prob&quot;</span><span class="p">]</span><span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="s2">&quot;Prob&quot;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13515,7 +13420,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[58]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="s2">"NegProb"</span><span class="p">]</span><span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="s2">"Prob"</span><span class="p">])</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="s2">&quot;NegProb&quot;</span><span class="p">]</span><span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="s2">&quot;Prob&quot;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13528,7 +13433,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[112]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="s2">"PosProb"</span><span class="p">]</span><span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="s2">"NegProb"</span><span class="p">])</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="s2">&quot;PosProb&quot;</span><span class="p">]</span><span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="s2">&quot;NegProb&quot;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13541,7 +13446,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[113]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">])</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13577,8 +13482,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[114]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="s2">"NegProb"</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">())</span>
-<span class="n">Rprob</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="s2">"NegProb"</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="s2">&quot;NegProb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">())</span>
+<span class="n">Rprob</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="s2">&quot;NegProb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13609,8 +13514,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[115]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">database</span><span class="p">[</span><span class="s1">'Q'</span><span class="p">][</span><span class="s2">"Prob"</span><span class="p">]</span><span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">'Q'</span><span class="p">][</span><span class="s2">"Prob"</span><span class="p">])</span>
-<span class="n">database</span><span class="p">[</span><span class="s1">'Q'</span><span class="p">][</span><span class="s2">"NegProb"</span><span class="p">]</span><span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">'Q'</span><span class="p">][</span><span class="s2">"Prob"</span><span class="p">])</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">][</span><span class="s2">&quot;Prob&quot;</span><span class="p">]</span><span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">][</span><span class="s2">&quot;Prob&quot;</span><span class="p">])</span>
+<span class="n">database</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">][</span><span class="s2">&quot;NegProb&quot;</span><span class="p">]</span><span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">][</span><span class="s2">&quot;Prob&quot;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13623,8 +13528,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[116]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">'Q'</span><span class="p">][</span><span class="s2">"NegProb"</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">())</span>
-<span class="n">Qprob</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">][</span><span class="s2">"NegProb"</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">][</span><span class="s2">&quot;NegProb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">())</span>
+<span class="n">Qprob</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">][</span><span class="s2">&quot;NegProb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13688,10 +13593,10 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[118]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">'The key is to find the neg probability in each (x,y) pairing, grouping on x'</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'Var1'</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">())</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'Var1'</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">())</span>
-<span class="n">database</span><span class="p">[</span><span class="s1">'Rprod'</span><span class="p">]</span><span class="o">=</span><span class="n">database</span><span class="p">[</span><span class="s1">'R'</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'Var1'</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;The key is to find the neg probability in each (x,y) pairing, grouping on x&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Var1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">())</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Var1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">())</span>
+<span class="n">database</span><span class="p">[</span><span class="s1">&#39;Rprod&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Var1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13727,7 +13632,7 @@ Var1
 <div class="prompt input_prompt">In&nbsp;[119]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">'Q'</span><span class="p">])</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13761,7 +13666,7 @@ Var1
 <div class="prompt input_prompt">In&nbsp;[120]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">'Rprod'</span><span class="p">])</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;Rprod&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13796,7 +13701,7 @@ Var1
 <div class="prompt input_prompt">In&nbsp;[127]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">'Rprod'</span><span class="p">],</span><span class="n">database</span><span class="p">[</span><span class="s1">'Q'</span><span class="p">],</span><span class="n">how</span><span class="o">=</span><span class="s1">'inner'</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="s1">'Var1'</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;Rprod&#39;</span><span class="p">],</span><span class="n">database</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">],</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="s1">&#39;Var1&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13843,7 +13748,7 @@ Var1
 <div class="prompt input_prompt">In&nbsp;[141]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">answer</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">result</span><span class="p">[</span><span class="s2">"Prob_y"</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">result</span><span class="p">[</span><span class="s2">"NegProb_x"</span><span class="p">])))</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">answer</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;Prob_y&quot;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;NegProb_x&quot;</span><span class="p">])))</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13889,7 +13794,7 @@ Var1
 <div class="prompt input_prompt">In&nbsp;[143]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="s1">'yay able to get the 8457 from parsing the files'</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="s1">&#39;yay able to get the 8457 from parsing the files&#39;</span>
 </pre></div>
 
     </div>
@@ -13908,7 +13813,7 @@ Var1
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>'yay able to get the 8457 from parsing the files'</pre>
+<pre>&#39;yay able to get the 8457 from parsing the files&#39;</pre>
 </div>
 
 </div>
@@ -13932,10 +13837,9 @@ Var1
 </div>
     </div>
   </div>
-
+</body>
 
  
 
 
-
-<div style="clear: both;"></div></body></html>
+</html>
