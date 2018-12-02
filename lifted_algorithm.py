@@ -20,11 +20,13 @@ def connected_components(variables):
     for i in xrange(len(variables)):
         if not visited[i]:
             cc = list()
-            cc.append(variables[i])
+            cc.append(i)
             for j in xrange(i+1, len(variables)):
-                if intersection(variables[i], variables[j]) != []:
-                    visited[j] = 1
-                    cc.append(variables[j])
+                for c in cc:
+                    if intersection(variables[c], variables[j]) != []:
+                        visited[j] = 1
+                        cc.append(j)
+                        break
             res.append(cc)
     return res
 
