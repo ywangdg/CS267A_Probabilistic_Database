@@ -57,9 +57,8 @@ def main(argv):
 
         #check_single_ground_atom(query, database)
         #convert_to_UCNF(query, database)
-        for cnf in query:
-            for atom in cnf:
-                print atom.table, atom.var
+        print query.cnf_list
+        print "---"
 
 
 

@@ -5,6 +5,16 @@ class Atom:
         self.table = table
         self.var = var
 
+class Query:
+    def __init__(self,cnf_list):
+        self.cnf_list = cnf_list
+        self.tables = list()
+        self.variables = list()
+        for cnf in cnf_list:
+            for atom in cnf:
+                self.tables.append(atom.table)
+                self.variables.append(atom.var)
+
 def parse_query(query):
     file = open(query, "r")
     lines = file.readlines()
@@ -25,6 +35,6 @@ def convert_query_to_class(queries):
                 if res:
                     atom_list.append(Atom(res[0], res[1:]))
             cnf_list.append(atom_list)
-        query_list.append(cnf_list)
+        query_list.append(Query(cnf_list))
 
     return query_list
