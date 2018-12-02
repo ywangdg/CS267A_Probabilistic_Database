@@ -3,8 +3,8 @@ import sys
 
 import numpy as np
 import pandas as pd
-from query_parser import Atom, convert_query_to_class
-import inspect
+from query_parser import *
+from lifted_algorithm import *
 
 database = dict()
 
@@ -49,11 +49,22 @@ def main(argv):
 
     query_list = convert_query_to_class(queries)
 
+    #check single ground atom
+    res = [0] * len(query_list)
+    print res
     for query in query_list:
+        #To be done:
+
+        #check_single_ground_atom(query, database)
+        #convert_to_UCNF(query, database)
         for cnf in query:
             for atom in cnf:
                 print atom.table, atom.var
-        print "---"
+
+
+
+
+
 
 
 
