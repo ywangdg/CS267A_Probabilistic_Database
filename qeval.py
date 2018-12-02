@@ -8,8 +8,6 @@ from lifted_algorithm import *
 
 database = dict()
 
-
-
 def read_table(table):
     file = open(table, "r")
     lines = file.readlines()
@@ -57,16 +55,8 @@ def main(argv):
 
         #check_single_ground_atom(query, database)
         #convert_to_UCNF(query, database)
-        print query.cnf_list
+        print connected_components(query.variables[0])
         print "---"
-
-
-
-
-
-
-
-
 
 
 

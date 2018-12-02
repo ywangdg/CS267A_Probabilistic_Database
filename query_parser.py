@@ -11,9 +11,13 @@ class Query:
         self.tables = list()
         self.variables = list()
         for cnf in cnf_list:
+            table_list = list()
+            var_list = list()
             for atom in cnf:
-                self.tables.append(atom.table)
-                self.variables.append(atom.var)
+                table_list.append(atom.table)
+                var_list.append(atom.var)
+            self.tables.append(table_list)
+            self.variables.append(var_list)
 
 def parse_query(query):
     file = open(query, "r")
