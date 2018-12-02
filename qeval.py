@@ -1,18 +1,14 @@
 import getopt
 import sys
-import re
+
 import numpy as np
 import pandas as pd
-from query import Atom
+from query_parser import Atom, convert_query_to_class
 import inspect
 
 database = dict()
 
-def parse_query(query):
-    file = open(query, "r")
-    lines = file.readlines()
-    sentence = lines[0]
-    return sentence.strip().split("||")
+
 
 def read_table(table):
     file = open(table, "r")
@@ -51,22 +47,13 @@ def main(argv):
     for table in tables:
         read_table(table)
 
-    query_list = list()
-    for query in queries:
-        query_raw = parse_query(query)
-        cnf_list = list()
-        for cnf in query_raw:
-            atom_raw = cnf.strip().split(")")
-            atom_list = list()
-            for atom in atom_raw:
-                res = re.split("\(|,| ", atom)
-                res = filter(None, res)
-                if res:
-                    atom_list.append(Atom(res[0], res[1:]))
-            cnf_list.append(atom_list)
-        query_list.append(cnf_list)
+    query_list = convert_query_to_class(queries)
 
-
+    for query in query_list:
+        for cnf in query:
+            for atom in cnf:
+                print atom.table, atom.var
+        print "---"
 
 
 
