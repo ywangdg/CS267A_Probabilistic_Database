@@ -31,6 +31,16 @@ def connected_components(variables):
     return res
 
 
+def simplify(query):
+    CNF1 = Query([query.tables[0]],[query.variables[0]])
+    CNF2 = Query([query.tables[1]],[query.variables[1]])
+    print CNF2.tables
+    print CNF2.variables
+
 def lifted_algoritm(query, database):
     #To be done
-    return 0
+    if len(query.variables) > 1:
+        simplify(query)
+        print "sss"
+    else:
+        print "hhh"

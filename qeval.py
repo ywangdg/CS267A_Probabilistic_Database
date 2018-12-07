@@ -49,15 +49,11 @@ def main(argv):
 
     #check single ground atom
     res = [0] * len(query_list)
-    print res
+    print "-------"
     for query in query_list:
         #To be done:
 
-        #check_single_ground_atom(query, database)
-        #convert_to_UCNF(query, database)
-        print connected_components(query.variables[0])
-        print "---"
-
+        lifted_algoritm(query, database)
 
 
 
