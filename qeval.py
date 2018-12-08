@@ -20,7 +20,7 @@ def read_table(table):
     for i in xrange(data.shape[1] - 1):
         columns.append('Var' + str(i+1))
     columns.append('Prob')
-    df = pd.DataFrame(data = data, columns = columns)
+    df = pd.DataFrame(data = data, columns = columns, dtype = float)
     database[table_name] = df
 
 
@@ -52,7 +52,6 @@ def main(argv):
     print "-------"
     for query in query_list:
         #To be done:
-
         lifted_algoritm(query, database)
 
 
