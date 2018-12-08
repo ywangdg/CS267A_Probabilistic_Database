@@ -27,7 +27,7 @@ class Query:
                 variable_to_column_mapping = {}
                 for variable_num in range(len(self.variables[clause_num][table_num])):
                     variable_name = self.variables[clause_num][table_num][variable_num]
-                    variable_to_column_mapping[variable_name] = "var{}".format(variable_num + 1)
+                    variable_to_column_mapping[variable_name] = "Var{}".format(variable_num + 1)
                 table_to_mapping[table_name] = variable_to_column_mapping
             self.variable_column_mapping_list.append(table_to_mapping)
 
@@ -58,5 +58,6 @@ def convert_query_to_class(queries):
             full_var_list.append(var_list)
 
         query_list.append(Query(full_table_list, full_var_list))
+        print query
 
     return query_list

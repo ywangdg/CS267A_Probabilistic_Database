@@ -1,4 +1,8 @@
 from query_parser import *
+import pandas as pd
+import sys
+import numpy as np
+import query
 
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
@@ -65,9 +69,9 @@ def get_probability(database, CNF_Query):
         database[name]['NegProb'] = (1 - database[name]['Prob'])
         print database
         database['Rprod'] =  database[name].groupby('Var1').prod()
-        database['Rprod']['NegProb'] =  1-database['Rprod']['NegProb']
+        database['Rprod']['Prob'] =  1-database['Rprod']['NegProb']
         print database
-        print 1 - (1 - database['Rprod']['NegProb']).prod()
+        print 1 - (1 - database['Rprod']['Prob']).prod()
 
     else:
         tables1 = tables[0][0]
@@ -80,7 +84,26 @@ def get_probability(database, CNF_Query):
             CNF2 = Query([[tables2]], [[var2]])
             print get_probability(database, CNF1) * get_probability(database, CNF2)
 
-        # else:
+        else:
+            print tables1, tables2
+            database[tables1]["NegProb"]= (1-database[tables1]["Prob"])
+            database['Rprod']=database[tables1].groupby('Var1').prod()
+            database['Rprod']["Prob"]= (1-database['Rprod']["NegProb"])
+            print database['Rprod'][['Prob']],database[tables2][['Var1','Prob']]
+            #result = pd.merge(database['Rprod'][['Prob']],database['Q'][['Var1','Prob']],on = '')
+            print(result)
+    #The merge is the same for all databases, assuming we join on one variable.
+    #The result below is the indepedent term* the probability for the dependent terms.
+    #or the probability of the xy term.
+            # result["Prob"]=1
+            # for column in result:
+            #     if ('Var' not in result[column].name and result[column].name!='Prob'):
+            #         #print(result[column])
+            #         result["Prob"]=result["Prob"]*result[column]
+            #         print(result)
+            # solution=1-(1-(result["Prob"])).prod()
+            # print(solution)
+
         #
 
 

@@ -52,6 +52,7 @@ def main(argv):
     print "-------"
     for query in query_list:
         #To be done:
+        print query.variable_column_mapping_list
         print query.tables
         print query.variables
         lifted_algoritm(query, database)
@@ -59,4 +60,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+    main(sys.argv[1:])
