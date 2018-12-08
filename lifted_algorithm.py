@@ -63,9 +63,11 @@ def get_probability(database, CNF_Query):
     if len(tables[0])== 1:
         name = tables[0][0]
         database[name]['NegProb'] = (1 - database[name]['Prob'])
+        print database
         database['Rprod'] =  database[name].groupby('Var1').prod()
-
-        return 1 - (1 - database['Rprod']['NegProb']).prod()
+        database['Rprod']['NegProb'] =  1-database['Rprod']['NegProb']
+        print database
+        print 1 - (1 - database['Rprod']['NegProb']).prod()
 
     else:
         tables1 = tables[0][0]
@@ -76,10 +78,10 @@ def get_probability(database, CNF_Query):
         if intersection(var1, var2) == []:
             CNF1 = Query([[tables1]], [[var1]])
             CNF2 = Query([[tables2]], [[var2]])
-            return get_probability(database, CNF1) * get_probability(database, CNF2)
+            print get_probability(database, CNF1) * get_probability(database, CNF2)
 
-        else:
-            
+        # else:
+        #
 
 
 
