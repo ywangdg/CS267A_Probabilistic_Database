@@ -5,6 +5,8 @@ class Query:
     def __init__(self,tables, variables):
         self.tables = tables
         self.variables = variables
+        # Sanity check for number of clauses is the same.
+        assert(len(self.tables) == len(self.variables))
         # Create a list of mappings for each clause.
         # Each mapping is of the form:
         # {
@@ -18,6 +20,8 @@ class Query:
         self.variable_column_mapping_list = []
         for clause_num in range(len(self.tables)):
             table_to_mapping = {}
+            # Sanity check for number of tables in each clause is the same.
+            assert(len(self.tables[clause_num]) == len(self.variables[clause_num]))
             for table_num in range(len(self.tables[clause_num])):
                 table_name = self.tables[clause_num][table_num]
                 variable_to_column_mapping = {}
