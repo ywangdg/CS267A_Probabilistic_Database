@@ -85,32 +85,23 @@ def get_probability(database, CNF_Query):
             print get_probability(database, CNF1) * get_probability(database, CNF2)
 
         else:
-            print tables1, tables2
+        # Case 3 for each independent p(x)r(x,y)    
             database[tables1]["NegProb"]= (1-database[tables1]["Prob"])
             database['Rprod']=database[tables1].groupby('Var1').prod()
             database['Rprod']["Prob"]= (1-database['Rprod']["NegProb"])
-            print database['Rprod'][['Prob']],database[tables2][['Var1','Prob']]
-            #result = pd.merge(database['Rprod'][['Prob']],database['Q'][['Var1','Prob']],on = '')
+            result = pd.merge(database['Rprod'][['Prob']],database[tables2][['Var1','Prob']],how='inner', on = 'Var1');
             print(result)
-    #The merge is the same for all databases, assuming we join on one variable.
-    #The result below is the indepedent term* the probability for the dependent terms.
-    #or the probability of the xy term.
-            # result["Prob"]=1
-            # for column in result:
-            #     if ('Var' not in result[column].name and result[column].name!='Prob'):
-            #         #print(result[column])
-            #         result["Prob"]=result["Prob"]*result[column]
-            #         print(result)
-            # solution=1-(1-(result["Prob"])).prod()
-            # print(solution)
-
-        #
-
-
-
-
-
-
+            print(database[tables2])
+            result["Prob"]=1
+            print(result)
+            for column in result:
+                if ('Var' not in result[column].name and result[column].name!='Prob'):
+                    #print(result[column])
+                    result["Prob"]=result["Prob"]*result[column]
+                    print(result)
+            solution=1-(1-(result["Prob"])).prod() 
+            print(solution)
+            
 def lifted_algoritm(query, database):
     #To be done
     if len(query.variables) > 1:
