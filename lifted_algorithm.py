@@ -4,8 +4,6 @@ import sys
 import numpy as np
 import query
 
-print pd.__version__
-
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
@@ -72,7 +70,6 @@ def get_probability(database, CNF_Query):
         database['Rprod'] =  database[name].groupby('Var1').prod()
         database['Rprod']['Prob'] =  1-database['Rprod']['NegProb']
         result = 1 - (1 - database['Rprod']['Prob']).prod()
-        print result
         return result
 
     else:
@@ -101,22 +98,41 @@ def get_probability(database, CNF_Query):
                     #print(result[column])
                     result["Prob"]=result["Prob"]*result[column]
             solution=1-(1-(result["Prob"])).prod()
-            print(solution)
             return solution
 
+def split_by_connected_components(tables, variables, connected_components):
+    new_queries = list()
+    new_tables = list()
+    new_vars = list()
+    for i in xrange(len(connected_components)):
+        new_tables.append([tables[0][j] for j in connected_components[i]])
+        new_vars.append([variables[0][j] for j in connected_components[i]])
+    assert(len(new_tables) == len(new_vars))
+    for i in xrange(len(new_tables)):
+        new_queries.append(Query([new_tables[i]], [new_vars[i]]))
+    return new_queries
+
 def lifted_algoritm(query, database):
+    tables = query.tables
+    variables = query.variables
     #To be done
-    if len(query.variables) > 1:
+    if len(variables) > 1:
         simplify(query)
         print "sss"
     else:
-        if len(connected_components(query.variables[0])) > 1:
+        cc = connected_components(variables[0])
+        if len(cc) > 1:
             cc_tables = list()
-            for i in xrange(len(connected_components(query.variables[0]))):
-                cc_tables.append([ query.tables[0][j] for j in connected_components(query.variables[0])[i]])
+            for i in xrange(len(cc)):
+                cc_tables.append([tables[0][j] for j in cc[i]])
             if not independent(cc_tables[0], cc_tables[1]):
-                print "hhh"
+                for query in split_by_connected_components(tables, variables, cc):
+                    print query.tables
+                    print query.variables
             else:
-                return 1
+                new_queries = split_by_connected_components(tables, variables, cc)
+                print get_probability(database, new_queries[0]) * get_probability(database, new_queries[1])
+                return get_probability(database, new_queries[0]) * get_probability(database, new_queries[1])
+
         else:
             return get_probability(database, query)
