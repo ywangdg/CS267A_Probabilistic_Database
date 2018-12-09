@@ -116,6 +116,11 @@ def split_by_connected_components(tables, variables, connected_components):
         new_queries.append(Query([new_tables[i]], [new_vars[i]]))
     return new_queries
 
+def union_of_cnf(cnf_queries):
+    union_tables = [query.tables[0] for query in cnf_queries ]
+    union_variables = [query.variables[0] for query in cnf_queries ]
+    return Query(union_tables, union_variables)
+
 def lifted_algoritm(database, query):
     tables = query.tables
     variables = query.variables
@@ -131,6 +136,7 @@ def lifted_algoritm(database, query):
                 cc_tables.append([tables[0][j] for j in cc[i]])
             if not independent(cc_tables[0], cc_tables[1]):
                 new_queries = split_by_connected_components(tables, variables, cc)
+                union_cnf_query = union_of_cnf(new_queries)
                 print get_probability(database, new_queries[0]) + get_probability(database, new_queries[1])
                 return get_probability(database, new_queries[0]) + get_probability(database, new_queries[1])
             else:
