@@ -133,8 +133,14 @@ def lifted_algorithm(database, query):
     variables = query.variables
     #To be done
     if len(variables) > 1:
-        simplify(query)
-        print "sss"
+        # Special case for now when we have 2 clauses
+        if len(variables) == 2:
+            table_intersection = intersection(query.tables[0], query.tables[1])
+            variable_intersection = intersection(query.variables[0], query.variables[1])
+
+            # We have dependent union of clauses with different variables in each clause.
+            if table_intersection != [] and variable_intersection == []:
+                return simplify_table_intersect(query, database)
     else:
         cc = connected_components(variables[0])
         if len(cc) > 1:
