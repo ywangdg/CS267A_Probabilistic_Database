@@ -117,17 +117,45 @@ def split_by_connected_components(tables, variables, connected_components):
     return new_queries
 
 def union_of_cnf(cnf_queries):
-    union_tables = [query.tables[0] for query in cnf_queries ]
+    union_tables = [query.tables[0] for yquery in cnf_queries ]
     union_variables = [query.variables[0] for query in cnf_queries ]
     return Query(union_tables, union_variables)
+
+def decompose_or(union_cnf_query):
+    cnf_tables = [[table] for table in union_cnf_query.tables]
+    cnf_variables = [[variables] for variables in union_cnf_query.variables]
+    assert(len(cnf_tables) == len(cnf_variables))
+    cnf_queries = list()
+    for i in xrange(len(cnf_tables)):
+        cnf_queries.append(Query(cnf_tables[i], cnf_variables[i]))
+    return cnf_queries
+
+def conjunction_of_cnf(cnf_queries):
+    cnf_tables = list()
+    cnf_variables = list()
+    for query in cnf_queries:
+        cnf_tables += query.tables[0]
+        cnf_variables += query.variables[0]
+    return Query([cnf_tables], [cnf_variables])
+
+
+
+
 
 def lifted_algoritm(database, query):
     tables = query.tables
     variables = query.variables
     #To be done
-    if len(variables) > 1:
-        simplify(query)
-        print "sss"
+    if len(variables) > 1: # with OR statement
+        cnf_queries = decompose_or(query)
+        #only consider two cnf cases at this stage
+        query1 = cnf_queries[0]
+        query2 = cnf_queries[1]
+        if intersection(query1.tables[0], query2.tables[0]) == []:
+            if intersection(query1.variables[0], query2.variables[0]) == []:
+                conjunction_of_cnf(cnf_queries)
+
+
     else:
         cc = connected_components(variables[0])
         if len(cc) > 1:
@@ -137,13 +165,9 @@ def lifted_algoritm(database, query):
             if not independent(cc_tables[0], cc_tables[1]):
                 new_queries = split_by_connected_components(tables, variables, cc)
                 union_cnf_query = union_of_cnf(new_queries)
-                print get_probability(database, new_queries[0]) + get_probability(database, new_queries[1])
-                return get_probability(database, new_queries[0]) + get_probability(database, new_queries[1])
+                return get_probability(database, new_queries[0]) + get_probability(database, new_queries[1]) - lifted_algoritm(union_cnf_query)
             else:
                 new_queries = split_by_connected_components(tables, variables, cc)
-                print lifted_algoritm(database, new_queries[0])
-                print lifted_algoritm(database, new_queries[1])
-                print lifted_algoritm(database, new_queries[0]) * lifted_algoritm(database, new_queries[1])
                 return lifted_algoritm(database, new_queries[0]) * lifted_algoritm(database, new_queries[1])
         else:
             return get_probability(database, query)
