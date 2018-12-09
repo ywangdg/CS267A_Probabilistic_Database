@@ -154,18 +154,23 @@ def lifted_algorithm(database, query):
     #To be done
     if len(variables) > 1:
         # Special case for now when we have 2 clauses
-
-
         if len(variables) == 2:
-            #case 2:
+            #case 1:
             cnf_queries = decompose_or(query)
             query1 = cnf_queries[0]
             query2 = cnf_queries[1]
-            if intersection(query1.tables[0], query2.tables[0]) == []:
-                if intersection(query1.variables[0], query2.variables[0]) == []:
-                    conjunction_of_cnf(cnf_queries)
-            table_intersection = intersection(query.tables[0], query.tables[1])
+            table_intersection =  intersection(query1.tables[0], query2.tables[0])
             variable_intersection = intersection(query.variables[0], query.variables[1])
+            if table_intersection == []:
+                if variable_intersection == []:
+                    print lifted_algorithm(database, query1)
+                    print query2.tables, query2.variables
+                    return 1 - (1 - lifted_algorithm(database, query1))*(1 - lifted_algorithm(database, query2))
+                else:
+                    conjunction_query = conjunction_of_cnf(cnf_queries)
+                    print conjunction_query.tables
+
+
 
             #case 3:
             #We have dependent union of clauses with different variables in each clause.
@@ -179,7 +184,6 @@ def lifted_algorithm(database, query):
                 cc_tables.append([tables[0][j] for j in cc[i]])
             if not independent(cc_tables[0], cc_tables[1]):
                 new_queries = split_by_connected_components(tables, variables, cc)
-                union_cnf_query = union_of_cnf(new_queries)
                 return get_probability(database, new_queries[0]) + get_probability(database, new_queries[1]) - lifted_algoritm(union_cnf_query)
             else:
                 new_queries = split_by_connected_components(tables, variables, cc)
@@ -187,3 +191,5 @@ def lifted_algorithm(database, query):
                 print lifted_algorithm(database, new_queries[1])
                 print lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
                 return lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
+        else:
+            return get_probability(database, query)
