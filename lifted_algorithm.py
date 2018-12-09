@@ -4,6 +4,8 @@ import sys
 import numpy as np
 import query
 
+print pd.__version__
+
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
@@ -38,7 +40,6 @@ def connected_components(variables):
             res.append(cc)
     return res
 
-
 def simplify(query):
     CNF1 = Query([query.tables[0]],[query.variables[0]])
     CNF2 = Query([query.tables[1]],[query.variables[1]])
@@ -63,45 +64,46 @@ def simplify(query):
 def get_probability(database, CNF_Query):
     tables = CNF_Query.tables
     variables = CNF_Query.variables
+    mapping = CNF_Query.variable_column_mapping_list
 
     if len(tables[0])== 1:
         name = tables[0][0]
         database[name]['NegProb'] = (1 - database[name]['Prob'])
-        print database
         database['Rprod'] =  database[name].groupby('Var1').prod()
         database['Rprod']['Prob'] =  1-database['Rprod']['NegProb']
-        print database
-        print 1 - (1 - database['Rprod']['Prob']).prod()
+        result = 1 - (1 - database['Rprod']['Prob']).prod()
+        print result
+        return result
 
     else:
         tables1 = tables[0][0]
         tables2 = tables[0][1]
         var1 = variables[0][0]
         var2 = variables[0][1]
-        print var1
         if intersection(var1, var2) == []:
             CNF1 = Query([[tables1]], [[var1]])
             CNF2 = Query([[tables2]], [[var2]])
-            print get_probability(database, CNF1) * get_probability(database, CNF2)
+            return get_probability(database, CNF1) * get_probability(database, CNF2)
 
         else:
-        # Case 3 for each independent p(x)r(x,y)    
+        # Case 3 for each independent p(x)r(x,y)
+            seperator = intersection(var1, var2)[0]
+            groupby_value_list = [ mapping[0][tables1][seperator], mapping[0][tables2][seperator]]
+
             database[tables1]["NegProb"]= (1-database[tables1]["Prob"])
-            database['Rprod']=database[tables1].groupby('Var1').prod()
+            database['Rprod']=database[tables1].groupby(groupby_value_list[0]).prod()
+            database['Rprod'].index.name = 'Var1'
             database['Rprod']["Prob"]= (1-database['Rprod']["NegProb"])
-            result = pd.merge(database['Rprod'][['Prob']],database[tables2][['Var1','Prob']],how='inner', on = 'Var1');
-            print(result)
-            print(database[tables2])
+            result = pd.merge(database['Rprod'][['Prob']],database[tables2][[groupby_value_list[1],'Prob']],how='inner', on = groupby_value_list[1]);
             result["Prob"]=1
-            print(result)
             for column in result:
                 if ('Var' not in result[column].name and result[column].name!='Prob'):
                     #print(result[column])
                     result["Prob"]=result["Prob"]*result[column]
-                    print(result)
-            solution=1-(1-(result["Prob"])).prod() 
+            solution=1-(1-(result["Prob"])).prod()
             print(solution)
-            
+            return solution
+
 def lifted_algoritm(query, database):
     #To be done
     if len(query.variables) > 1:
@@ -115,6 +117,6 @@ def lifted_algoritm(query, database):
             if not independent(cc_tables[0], cc_tables[1]):
                 print "hhh"
             else:
-                print "sss"
+                return 1
         else:
-            get_probability(database, query)
+            return get_probability(database, query)
