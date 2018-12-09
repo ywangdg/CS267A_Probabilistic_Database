@@ -88,10 +88,14 @@ def get_probability(database, CNF_Query):
             groupby_value_list = [ mapping[0][tables1][seperator], mapping[0][tables2][seperator]]
 
             database[tables1]["NegProb"]= (1-database[tables1]["Prob"])
-            database['Rprod']=database[tables1].groupby(groupby_value_list[0]).prod()
-            database['Rprod'].index.name = 'Var1'
-            database['Rprod']["Prob"]= (1-database['Rprod']["NegProb"])
-            result = pd.merge(database['Rprod'][['Prob']],database[tables2][[groupby_value_list[1],'Prob']],how='inner', on = groupby_value_list[1]);
+            database[tables1]=database[tables1].groupby(groupby_value_list[0]).prod()
+            database[tables1].index.name = 'Var1'
+            database[tables1]["Prob"]= (1-database[tables1]["NegProb"])
+            database[tables2]["NegProb"]= (1-database[tables2]["Prob"])
+            database[tables2]=database[tables2].groupby(groupby_value_list[1]).prod()
+            database[tables2].index.name = 'Var1'
+            database[tables2]["Prob"]= (1-database[tables2]["NegProb"])
+            result = pd.merge(database[tables1][['Prob']],database[tables2][['Prob']],how='inner', on = groupby_value_list[1]);
             result["Prob"]=1
             for column in result:
                 if ('Var' not in result[column].name and result[column].name!='Prob'):
@@ -112,7 +116,7 @@ def split_by_connected_components(tables, variables, connected_components):
         new_queries.append(Query([new_tables[i]], [new_vars[i]]))
     return new_queries
 
-def lifted_algoritm(query, database):
+def lifted_algoritm(database, query):
     tables = query.tables
     variables = query.variables
     #To be done
@@ -126,13 +130,14 @@ def lifted_algoritm(query, database):
             for i in xrange(len(cc)):
                 cc_tables.append([tables[0][j] for j in cc[i]])
             if not independent(cc_tables[0], cc_tables[1]):
-                for query in split_by_connected_components(tables, variables, cc):
-                    print query.tables
-                    print query.variables
+                new_queries = split_by_connected_components(tables, variables, cc)
+                print get_probability(database, new_queries[0]) + get_probability(database, new_queries[1])
+                return get_probability(database, new_queries[0]) + get_probability(database, new_queries[1])
             else:
                 new_queries = split_by_connected_components(tables, variables, cc)
-                print get_probability(database, new_queries[0]) * get_probability(database, new_queries[1])
-                return get_probability(database, new_queries[0]) * get_probability(database, new_queries[1])
-
+                print lifted_algoritm(database, new_queries[0])
+                print lifted_algoritm(database, new_queries[1])
+                print lifted_algoritm(database, new_queries[0]) * lifted_algoritm(database, new_queries[1])
+                return lifted_algoritm(database, new_queries[0]) * lifted_algoritm(database, new_queries[1])
         else:
             return get_probability(database, query)

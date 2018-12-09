@@ -52,7 +52,7 @@ def main(argv):
     print "-------"
     for query in query_list:
         #To be done:
-        lifted_algoritm(query, database)
+        lifted_algoritm(database, query)
 
 
 
