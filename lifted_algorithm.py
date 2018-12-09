@@ -38,32 +38,39 @@ def connected_components(variables):
             res.append(cc)
     return res
 
-def simplify(query):
-    CNF1 = Query([query.tables[0]],[query.variables[0]])
-    CNF2 = Query([query.tables[1]],[query.variables[1]])
-    intersect_table = intersection(CNF1.tables[0], CNF2.tables[0])[0]
-    if intersect_table != []:
-        index1 = CNF1.tables[0].index( intersect_table)
-        index2 = CNF2.tables[0].index( intersect_table)
-        intersect_var = CNF1.variables[0][index1]
+# When simplify is called, we know we have a disjunction in our query with a shared table such as:
+# [T(x1),Q(x1,y1)]||[S(x2),Q(x2,y2)]
+# Let query_1 = [T(x1),Q(x1,y1)] and query_2 = [S(x2),Q(x2,y2)] and query_3 = query_1 * query_2
+# We perform inclusion exclusion and get query_1 + query_2 - query_3
+# query_1 and query_2 are easy to compute with a call to get_probability.
+# query_3 = T(x1),Q(x1,y1),S(x2),Q(x2,y2), which is solved with a recurive call to lifted_algorithm.
+def simplify_table_intersect(query, database):
+    query_1 = Query([query.tables[0]], [query.variables[0]])
+    query_2 = Query([query.tables[1]], [query.variables[1]])
 
-        new_cnf_table1 = CNF1.tables[0]
-        new_cnf_table1.remove(intersect_table)
-        new_cnf_table2 = CNF2.tables[0]
-        new_cnf_table2.remove(intersect_table)
+    query_3 = Query([query.tables[0]+query.tables[1]], [query.variables[0]+query.variables[1]])
 
-        new_cnf_var1 = CNF1.variables[0]
-        new_cnf_var1.pop(index1)
-        new_cnf_var2 = CNF2.variables[0]
-        new_cnf_var2.pop(index2)
+    print query_1.tables
+    print query_1.variables
 
-        Query1 = Query([new_cnf_table1 + new_cnf_table2], [new_cnf_var1 + new_cnf_var2])
+    print ""
+
+    print query_2.tables
+    print query_2.variables
+
+    print ""
+
+    print query_3.tables
+    print query_3.variables
+
+    return get_probability(database, query_1) + get_probability(database, query_1) - lifted_algorithm(database, query_3)
 
 def get_probability(database, CNF_Query):
     tables = CNF_Query.tables
     variables = CNF_Query.variables
     mapping = CNF_Query.variable_column_mapping_list
 
+    # Base Case
     if len(tables[0])== 1:
         name = tables[0][0]
         database[name]['NegProb'] = (1 - database[name]['Prob'])
@@ -84,8 +91,8 @@ def get_probability(database, CNF_Query):
 
         else:
         # Case 3 for each independent p(x)r(x,y)
-            seperator = intersection(var1, var2)[0]
-            groupby_value_list = [ mapping[0][tables1][seperator], mapping[0][tables2][seperator]]
+            separator = intersection(var1, var2)[0]
+            groupby_value_list = [ mapping[0][tables1][separator], mapping[0][tables2][separator]]
 
             database[tables1]["NegProb"]= (1-database[tables1]["Prob"])
             database[tables1]=database[tables1].groupby(groupby_value_list[0]).prod()
@@ -121,6 +128,7 @@ def union_of_cnf(cnf_queries):
     union_variables = [query.variables[0] for query in cnf_queries ]
     return Query(union_tables, union_variables)
 
+
 def decompose_or(union_cnf_query):
     cnf_tables = [[table] for table in union_cnf_query.tables]
     cnf_variables = [[variables] for variables in union_cnf_query.variables]
@@ -140,22 +148,29 @@ def conjunction_of_cnf(cnf_queries):
 
 
 
-
-
-def lifted_algoritm(database, query):
+def lifted_algorithm(database, query):
     tables = query.tables
     variables = query.variables
     #To be done
-    if len(variables) > 1: # with OR statement
-        cnf_queries = decompose_or(query)
-        #only consider two cnf cases at this stage
-        query1 = cnf_queries[0]
-        query2 = cnf_queries[1]
-        if intersection(query1.tables[0], query2.tables[0]) == []:
-            if intersection(query1.variables[0], query2.variables[0]) == []:
-                conjunction_of_cnf(cnf_queries)
+    if len(variables) > 1:
+        # Special case for now when we have 2 clauses
 
 
+        if len(variables) == 2:
+            #case 2:
+            cnf_queries = decompose_or(query)
+            query1 = cnf_queries[0]
+            query2 = cnf_queries[1]
+            if intersection(query1.tables[0], query2.tables[0]) == []:
+                if intersection(query1.variables[0], query2.variables[0]) == []:
+                    conjunction_of_cnf(cnf_queries)
+            table_intersection = intersection(query.tables[0], query.tables[1])
+            variable_intersection = intersection(query.variables[0], query.variables[1])
+
+            #case 3:
+            #We have dependent union of clauses with different variables in each clause.
+            if table_intersection != [] and variable_intersection == []:
+                return simplify_table_intersect(query, database)
     else:
         cc = connected_components(variables[0])
         if len(cc) > 1:
@@ -168,6 +183,7 @@ def lifted_algoritm(database, query):
                 return get_probability(database, new_queries[0]) + get_probability(database, new_queries[1]) - lifted_algoritm(union_cnf_query)
             else:
                 new_queries = split_by_connected_components(tables, variables, cc)
-                return lifted_algoritm(database, new_queries[0]) * lifted_algoritm(database, new_queries[1])
-        else:
-            return get_probability(database, query)
+                print lifted_algorithm(database, new_queries[0])
+                print lifted_algorithm(database, new_queries[1])
+                print lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
+                return lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
