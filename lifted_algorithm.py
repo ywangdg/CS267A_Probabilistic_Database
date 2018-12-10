@@ -38,6 +38,14 @@ def connected_components(variables):
             res.append(cc)
     return res
 
+def get_seperator(variables):
+    print variables
+    sets = iter(map(set, variables))
+    result = sets.next()
+    for s in sets:
+        result = result.intersection(s)
+    return list(result)
+
 # When simplify is called, we know we have a disjunction in our query with a shared table such as:
 # [T(x1),Q(x1,y1)]||[S(x2),Q(x2,y2)]
 # Let query_1 = [T(x1),Q(x1,y1)] and query_2 = [S(x2),Q(x2,y2)] and query_3 = query_1 * query_2
@@ -65,6 +73,10 @@ def simplify_table_intersect(query, database):
 
     return get_probability(database, query_1) + get_probability(database, query_1) - lifted_algorithm(database, query_3)
 
+def get_groupby_variables(separator, mapping):
+    return  [[mapping[i][var] for var in separator] for i in mapping]
+
+
 def get_probability(database, CNF_Query):
     tables = CNF_Query.tables
     variables = CNF_Query.variables
@@ -80,29 +92,25 @@ def get_probability(database, CNF_Query):
         return result
 
     else:
-        tables1 = tables[0][0]
-        tables2 = tables[0][1]
-        var1 = variables[0][0]
-        var2 = variables[0][1]
-        if intersection(var1, var2) == []:
-            CNF1 = Query([[tables1]], [[var1]])
-            CNF2 = Query([[tables2]], [[var2]])
-            return get_probability(database, CNF1) * get_probability(database, CNF2)
-
+        separator = get_seperator(variables[0])
+        print separator
+        if separator == []:
+            print "Not liftable"
+            sys.exit(0)
         else:
-        # Case 3 for each independent p(x)r(x,y)
-            separator = intersection(var1, var2)[0]
-            groupby_value_list = [ mapping[0][tables1][separator], mapping[0][tables2][separator]]
+            groupby_value_list = get_groupby_variables(separator, mapping[0])
 
-            database[tables1]["NegProb"]= (1-database[tables1]["Prob"])
-            database[tables1]=database[tables1].groupby(groupby_value_list[0]).prod()
-            database[tables1].index.name = 'Var1'
-            database[tables1]["Prob"]= (1-database[tables1]["NegProb"])
-            database[tables2]["NegProb"]= (1-database[tables2]["Prob"])
-            database[tables2]=database[tables2].groupby(groupby_value_list[1]).prod()
-            database[tables2].index.name = 'Var1'
-            database[tables2]["Prob"]= (1-database[tables2]["NegProb"])
-            result = pd.merge(database[tables1][['Prob']],database[tables2][['Prob']],how='inner', on = groupby_value_list[1]);
+            for i in xrange(len(tables[0])):
+                name = tables[0][i]
+                database[name]["NegProb"]= (1-database[name]["Prob"])
+                database[name]=database[name].groupby(groupby_value_list[i][0]).prod()
+                database[name].index.name = 'Var1'
+                database[name]["Prob"]= (1-database[name]["NegProb"])
+
+            print database
+            result = database[tables[0][0]][['Prob']]
+            for i in xrange(1, len(tables[0])):
+                result = result.merge(database[tables[0][i]][['Prob']],how='inner', on = 'Var1');
             result["Prob"]=1
             for column in result:
                 if ('Var' not in result[column].name and result[column].name!='Prob'):
@@ -110,6 +118,37 @@ def get_probability(database, CNF_Query):
                     result["Prob"]=result["Prob"]*result[column]
             solution=1-(1-(result["Prob"])).prod()
             return solution
+        # tables1 = tables[0][0]
+        # tables2 = tables[0][1]
+        # var1 = variables[0][0]
+        # var2 = variables[0][1]
+        # print (tables1, tables2, var1, var2)
+        # if intersection(var1, var2) == []:
+        #     CNF1 = Query([[tables1]], [[var1]])
+        #     CNF2 = Query([[tables2]], [[var2]])
+        #     return get_probability(database, CNF1) * get_probability(database, CNF2)
+        #
+        # else:
+        # # Case 3 for each independent p(x)r(x,y)
+        #     separator = intersection(var1, var2)[0]
+        #     groupby_value_list = [ mapping[0][tables1][separator], mapping[0][tables2][separator]]
+        #
+        #     database[tables1]["NegProb"]= (1-database[tables1]["Prob"])
+        #     database[tables1]=database[tables1].groupby(groupby_value_list[0]).prod()
+        #     database[tables1].index.name = 'Var1'
+        #     database[tables1]["Prob"]= (1-database[tables1]["NegProb"])
+        #     database[tables2]["NegProb"]= (1-database[tables2]["Prob"])
+        #     database[tables2]=database[tables2].groupby(groupby_value_list[1]).prod()
+        #     database[tables2].index.name = 'Var1'
+        #     database[tables2]["Prob"]= (1-database[tables2]["NegProb"])
+        #     result = pd.merge(database[tables1][['Prob']],database[tables2][['Prob']],how='inner', on = groupby_value_list[1]);
+        #     result["Prob"]=1
+        #     for column in result:
+        #         if ('Var' not in result[column].name and result[column].name!='Prob'):
+        #             #print(result[column])
+        #             result["Prob"]=result["Prob"]*result[column]
+        #     solution=1-(1-(result["Prob"])).prod()
+        #     return solution
 
 def split_by_connected_components(tables, variables, connected_components):
     new_queries = list()
@@ -163,12 +202,10 @@ def lifted_algorithm(database, query):
             variable_intersection = intersection(query.variables[0], query.variables[1])
             if table_intersection == []:
                 if variable_intersection == []:
-                    print lifted_algorithm(database, query1)
-                    print query2.tables, query2.variables
                     return 1 - (1 - lifted_algorithm(database, query1))*(1 - lifted_algorithm(database, query2))
                 else:
                     conjunction_query = conjunction_of_cnf(cnf_queries)
-                    print conjunction_query.tables
+                    return lifted_algorithm(database, query1) + lifted_algorithm(database, query2) - lifted_algorithm(database, conjunction_query)
 
 
 
@@ -187,9 +224,6 @@ def lifted_algorithm(database, query):
                 return get_probability(database, new_queries[0]) + get_probability(database, new_queries[1]) - lifted_algoritm(union_cnf_query)
             else:
                 new_queries = split_by_connected_components(tables, variables, cc)
-                print lifted_algorithm(database, new_queries[0])
-                print lifted_algorithm(database, new_queries[1])
-                print lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
                 return lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
         else:
             return get_probability(database, query)
