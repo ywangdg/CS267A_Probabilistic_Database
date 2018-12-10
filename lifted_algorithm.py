@@ -102,21 +102,24 @@ def get_probability(database, CNF_Query):
 
             for i in xrange(len(tables[0])):
                 name = tables[0][i]
+                print name
                 database[name]["NegProb"]= (1-database[name]["Prob"])
                 database[name]=database[name].groupby(groupby_value_list[i][0]).prod()
                 database[name].index.name = 'Var1'
                 database[name]["Prob"]= (1-database[name]["NegProb"])
 
-            print database
             result = database[tables[0][0]][['Prob']]
+            print result
             for i in xrange(1, len(tables[0])):
                 result = result.merge(database[tables[0][i]][['Prob']],how='inner', on = 'Var1');
-            result["Prob"]=1
+                print result
+            result["Total_Prob"]=1
+            print result
             for column in result:
-                if ('Var' not in result[column].name and result[column].name!='Prob'):
+                if ('Var' not in result[column].name and result[column].name!='Total_Prob'):
                     #print(result[column])
-                    result["Prob"]=result["Prob"]*result[column]
-            solution=1-(1-(result["Prob"])).prod()
+                    result["Total_Prob"]=result["Total_Prob"]*result[column]
+            solution=1-(1-(result["Total_Prob"])).prod()
             return solution
         # tables1 = tables[0][0]
         # tables2 = tables[0][1]
