@@ -1,5 +1,5 @@
 import re
-
+from collections import OrderedDict
 
 class Query:
     def __init__(self,tables, variables):
@@ -19,12 +19,14 @@ class Query:
         # column_name is the column name that the variable refers to.
         self.variable_column_mapping_list = []
         for clause_num in range(len(self.tables)):
-            table_to_mapping = {}
+            table_to_mapping = OrderedDict()
             # Sanity check for number of tables in each clause is the same.
             assert(len(self.tables[clause_num]) == len(self.variables[clause_num]))
             for table_num in range(len(self.tables[clause_num])):
+
                 table_name = self.tables[clause_num][table_num]
-                variable_to_column_mapping = {}
+
+                variable_to_column_mapping = OrderedDict()
                 for variable_num in range(len(self.variables[clause_num][table_num])):
                     variable_name = self.variables[clause_num][table_num][variable_num]
                     variable_to_column_mapping[variable_name] = "Var{}".format(variable_num + 1)

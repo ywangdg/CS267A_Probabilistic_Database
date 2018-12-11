@@ -3,9 +3,14 @@ import pandas as pd
 import sys
 import numpy as np
 import query
+import copy
 
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
+    return lst3
+
+def index_of_intersection(lst1, lst2):
+    lst3 = [lst1.index(value) for value in lst1 if value in lst2]
     return lst3
 
 def union(a, b):
@@ -52,26 +57,38 @@ def get_seperator(variables):
 # We perform inclusion exclusion and get query_1 + query_2 - query_3
 # query_1 and query_2 are easy to compute with a call to get_probability.
 # query_3 = T(x1),Q(x1,y1),S(x2),Q(x2,y2), which is solved with a recurive call to lifted_algorithm.
-def simplify_table_intersect(query, database):
-    query_1 = Query([query.tables[0]], [query.variables[0]])
-    query_2 = Query([query.tables[1]], [query.variables[1]])
+def simplify_table_intersect(database, query):
+    table_intersection =  intersection(query.tables[0], query.tables[1])[0]
+    seperator_var = [var for var in query.variable_column_mapping_list[0][table_intersection].keys()]
+    seperator_query = Query([[table_intersection]], [[seperator_var]])
 
-    query_3 = Query([query.tables[0]+query.tables[1]], [query.variables[0]+query.variables[1]])
+    query_tables = copy.deepcopy(query.tables)
 
-    print query_1.tables
-    print query_1.variables
+    for cnf_tables in query_tables:
+        cnf_tables.remove(table_intersection)
 
-    print ""
+    rest_query_tables = query_tables
 
-    print query_2.tables
-    print query_2.variables
+    rest_variable_index_list = list()
+    for i in xrange(len(query.variables)):
+        cnf_intersection_index_list = list()
+        for table in query.tables[i]:
+            if table != table_intersection:
+                intersect_index = index_of_intersection(query.variable_column_mapping_list[i][table_intersection].keys(), query.variable_column_mapping_list[i][table].keys())
+                cnf_intersection_index_list.append(intersect_index)
+        rest_variable_index_list.append(cnf_intersection_index_list)
 
-    print ""
 
-    print query_3.tables
-    print query_3.variables
+    rest_variable_list = list()
+    for i in xrange(len(rest_variable_index_list)):
+        rest_variable_list.append([[seperator_var[index] for index in index_list]  for index_list in rest_variable_index_list[i]])
 
-    return get_probability(database, query_1) + get_probability(database, query_1) - lifted_algorithm(database, query_3)
+    rest_query = Query(rest_query_tables, rest_variable_list)
+    print seperator_query.tables, seperator_query.variables
+    print rest_query.tables, rest_query.variables
+
+
+    # return lifted_algorithm(database, query_1) + lifted_algorithm(database, query_1) - lifted_algorithm(database, query_3)
 
 def get_groupby_variables(separator, mapping):
     return  [[mapping[i][var] for var in separator] for i in mapping]
@@ -99,7 +116,8 @@ def get_probability(database, CNF_Query):
             sys.exit(0)
         else:
             groupby_value_list = get_groupby_variables(separator, mapping[0])
-
+            print mapping
+            print groupby_value_list
             for i in xrange(len(tables[0])):
                 name = tables[0][i]
                 print name
@@ -117,6 +135,7 @@ def get_probability(database, CNF_Query):
                 if ('Var' not in result[column].name and result[column].name!='Total_Prob'):
                     #print(result[column])
                     result["Total_Prob"]=result["Total_Prob"]*result[column]
+
             solution=1-(1-(result["Total_Prob"])).prod()
             return solution
         # tables1 = tables[0][0]
@@ -164,7 +183,7 @@ def split_by_connected_components(tables, variables, connected_components):
     return new_queries
 
 def union_of_cnf(cnf_queries):
-    union_tables = [query.tables[0] for yquery in cnf_queries ]
+    union_tables = [query.tables[0] for query in cnf_queries ]
     union_variables = [query.variables[0] for query in cnf_queries ]
     return Query(union_tables, union_variables)
 
@@ -186,8 +205,6 @@ def conjunction_of_cnf(cnf_queries):
         cnf_variables += query.variables[0]
     return Query([cnf_tables], [cnf_variables])
 
-
-
 def lifted_algorithm(database, query):
     tables = query.tables
     variables = query.variables
@@ -206,14 +223,17 @@ def lifted_algorithm(database, query):
                     return 1 - (1 - lifted_algorithm(database, query1))*(1 - lifted_algorithm(database, query2))
                 else:
                     conjunction_query = conjunction_of_cnf(cnf_queries)
+                    print conjunction_query.tables, conjunction_query.variables
                     return lifted_algorithm(database, query1) + lifted_algorithm(database, query2) - lifted_algorithm(database, conjunction_query)
-
-
-
+            else:
             #case 3:
             #We have dependent union of clauses with different variables in each clause.
-            if table_intersection != [] and variable_intersection == []:
-                return simplify_table_intersect(query, database)
+            #table_intersection != [] and variable_intersection == []:
+                print "simplify"
+                return simplify_table_intersect(database, query)
+        else:
+            print "Not liftable for more than 2 cnf clauses right now"
+            sys.exit(0)
     else:
         cc = connected_components(variables[0])
         if len(cc) > 1:
@@ -222,7 +242,8 @@ def lifted_algorithm(database, query):
                 cc_tables.append([tables[0][j] for j in cc[i]])
             if not independent(cc_tables[0], cc_tables[1]):
                 new_queries = split_by_connected_components(tables, variables, cc)
-                return get_probability(database, new_queries[0]) + get_probability(database, new_queries[1]) - lifted_algoritm(union_cnf_query)
+                print lifted_algorithm(database, union_of_cnf(new_queries))
+                # return lifted_algorithm(database, new_queries[0]) + lifted_algorithm(database, new_queries[1]) - lifted_algorithm(database, union_of_cnf(new_queries))
             else:
                 new_queries = split_by_connected_components(tables, variables, cc)
                 return lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
