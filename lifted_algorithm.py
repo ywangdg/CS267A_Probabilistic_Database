@@ -130,7 +130,7 @@ def get_probability(database, CNF_Query):
             data_frames = [database[tables[0][i]][['Prob']].add_suffix(str(i)) for i in xrange(len(tables[0])) ]
             print data_frames
 
-            result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
+            result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='inner'), data_frames)
             result["Total_Prob"]=1
             for column in result:
                 if ('Var' not in result[column].name and result[column].name!='Total_Prob'):
@@ -199,7 +199,6 @@ def px_or_qx(database, query):
             table = tables[i][j]
             database[table]["NegProb"]= (1-database[table]["Prob"])
             #
-            database[table]["NegProb"]= (1-database[table]["Prob"])
             database[table]=database[table].groupby(grounding_var_list[i][j]).prod()
             database[table].index.name = 'Var1'
             database[table]["Prob"]= (1-database[table]["NegProb"])
@@ -209,6 +208,8 @@ def px_or_qx(database, query):
     result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
     result["Total_Prob"]=1
     print result
+    orfunct=(1-(1-result["ProbP"])*(1-result["ProbQ"]))
+    print 1-(1-orfunct).prod()
 
 def lifted_algorithm(database, query):
     tables = query.tables
