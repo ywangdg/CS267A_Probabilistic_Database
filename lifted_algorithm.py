@@ -13,6 +13,13 @@ def index_of_intersection(lst1, lst2):
     lst3 = [lst1.index(value) for value in lst1 if value in lst2]
     return lst3
 
+def intersection_multiple_list(lst_of_list):
+    result = lst_of_list[0]
+    for lst in lst_of_list:
+        result = intersection(result, lst)
+    return result
+
+
 def union(a, b):
     """ return the union of two lists """
     return list(set(a) | set(b))
@@ -46,6 +53,7 @@ def connected_components(variables):
 def get_seperator(variables):
     sets = iter(map(set, variables))
     result = sets.next()
+    print result
     for s in sets:
         result = result.intersection(s)
     return list(result)
@@ -63,9 +71,7 @@ def simplify_table_intersect(database, query):
     table_intersection =  intersection(query.tables[0], query.tables[1])[0]
     seperator_var = [var for var in query.variable_column_mapping_list[0][table_intersection].keys()]
     seperator_query = Query([[table_intersection]], [[seperator_var]])
-
     query_tables = copy.deepcopy(query.tables)
-
     for cnf_tables in query_tables:
         cnf_tables.remove(table_intersection)
 
@@ -86,9 +92,10 @@ def simplify_table_intersect(database, query):
         rest_variable_list.append([[seperator_var[index] for index in index_list]  for index_list in rest_variable_index_list[i]])
 
     rest_query = Query(rest_query_tables, rest_variable_list)
-    print seperator_query.tables, seperator_query.variables
-    print rest_query.tables, rest_query.variables
+    rest_result_df, x = two_tables_or(database, rest_query)
+    seperator_df, prob = get_probability(database, seperator_query)
 
+    return 1 - (1 - rest_result_df * seperator_df).prod()
 
     # return lifted_algorithm(database, query_1) + lifted_algorithm(database, query_1) - lifted_algorithm(database, query_3)
 
@@ -100,45 +107,30 @@ def get_probability(database, CNF_Query):
     tables = CNF_Query.tables
     variables = CNF_Query.variables
     mapping = CNF_Query.variable_column_mapping_list
-
-    # Base Case
-    if len(tables[0])== 1:
-        name = tables[0][0]
-        database[name]['NegProb'] = (1 - database[name]['Prob'])
-        database['Rprod'] =  database[name].groupby('Var1').prod()
-        database['Rprod']['Prob'] =  1-database['Rprod']['NegProb']
-        result = 1 - (1 - database['Rprod']['Prob']).prod()
-        return result
-
+    separator = intersection_multiple_list(variables[0])
+    if separator == []:
+        print "Not liftable"
+        sys.exit(0)
     else:
-        separator = get_seperator(variables[0])
-        if separator == []:
-            print "Not liftable"
-            sys.exit(0)
-        else:
-            groupby_value_list = get_groupby_variables(separator, mapping[0])
-            print mapping
-            print groupby_value_list
-            for i in xrange(len(tables[0])):
-                name = tables[0][i]
-                print name
-                database[name]["NegProb"]= (1-database[name]["Prob"])
-                database[name]=database[name].groupby(groupby_value_list[i][0]).prod()
-                database[name].index.name = 'Var1'
-                database[name]["Prob"]= (1-database[name]["NegProb"])
+        groupby_value_list = get_groupby_variables(separator, mapping[0])
+        for i in xrange(len(tables[0])):
+            name = tables[0][i]
+            database[name]["NegProb"]= (1-database[name]["Prob"])
+            database[name]=database[name].groupby(groupby_value_list[i][0]).prod()
+            database[name].index.name = 'Var1'
+            database[name]["Prob"]= (1-database[name]["NegProb"])
 
-            data_frames = [database[tables[0][i]][['Prob']].add_suffix(str(i)) for i in xrange(len(tables[0])) ]
-            print data_frames
+        data_frames = [database[tables[0][i]][['Prob']].add_suffix(str(i)) for i in xrange(len(tables[0])) ]
 
-            result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='inner'), data_frames)
-            result["Total_Prob"]=1
-            for column in result:
-                if ('Var' not in result[column].name and result[column].name!='Total_Prob'):
-                    #print(result[column])
-                    result["Total_Prob"]=result["Total_Prob"]*result[column]
+        result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='inner'), data_frames)
+        result["Total_Prob"]=1
+        for column in result:
+            if ('Var' not in result[column].name and result[column].name!='Total_Prob'):
+                #print(result[column])
+                result["Total_Prob"]=result["Total_Prob"]*result[column]
 
-            solution=1-(1-(result["Total_Prob"])).prod()
-            return solution
+        solution=1-(1-(result["Total_Prob"])).prod()
+        return result["Total_Prob"] ,solution
 
 def split_by_connected_components(tables, variables, connected_components):
     new_queries = list()
@@ -175,19 +167,15 @@ def conjunction_of_cnf(cnf_queries):
         cnf_variables += query.variables[0]
     return Query([cnf_tables], [cnf_variables])
 
-def px_or_qx(database, query):
-
-#     orfunct=(1-(1-df_final["Prob_x"])*(1-df_final["Prob_y"])) #replace this with table 1, table 2
-#     xyfunct=(1-(df_final["NegProb"])) #replace this with prob(r)
-# #.prod()
-#     solution=1-(1-orfunct*xyfunct).vprod()
-#     print(orfunct,xyfunct,solution)
+def two_tables_or(database, query):
     tables = query.tables
-    print tables
+    assert (len(tables)==2)
+    assert (len(tables[0])==1)
+    assert (len(tables[1])==1)
+
     variables = query.variables
     mapping = query.variable_column_mapping_list
     grounding = get_grounding_for_or(variables)
-
     grounding_var_list = list()
     for i in xrange(len(mapping)):
         grounding_var_list.append([mapping[i][key][grounding[0]] for key in mapping[i].keys()])
@@ -204,12 +192,15 @@ def px_or_qx(database, query):
             database[table]["Prob"]= (1-database[table]["NegProb"])
 
     data_frames = [database[tables[i][j]][['Prob']].add_suffix(str(tables[i][j])) for j in xrange(len(tables[i])) for i in xrange(len(tables)) ]
-    print data_frames
     result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
-    result["Total_Prob"]=1
-    print result
-    orfunct=(1-(1-result["ProbP"])*(1-result["ProbQ"]))
-    print 1-(1-orfunct).prod()
+
+    product = 1
+    for col in list(result.columns):
+            product = product * (1-result[col])
+
+    orfunct= 1- product
+    solution = 1-(1-orfunct).prod()
+    return orfunct, solution
 
 def lifted_algorithm(database, query):
     tables = query.tables
@@ -228,7 +219,8 @@ def lifted_algorithm(database, query):
                 if variable_intersection == []:
                     return 1 - (1 - lifted_algorithm(database, query1))*(1 - lifted_algorithm(database, query2))
                 else:
-                    px_or_qx(database, query)
+                    _, prob = two_tables_or(database, query)
+                    return prob
             #case 3:
             #We have dependent union of clauses with different variables in each clause.
             #table_intersection != [] and variable_intersection == []:
@@ -246,10 +238,11 @@ def lifted_algorithm(database, query):
                 cc_tables.append([tables[0][j] for j in cc[i]])
             if not independent(cc_tables[0], cc_tables[1]):
                 new_queries = split_by_connected_components(tables, variables, cc)
-                print lifted_algorithm(database, union_of_cnf(new_queries))
-                # return lifted_algorithm(database, new_queries[0]) + lifted_algorithm(database, new_queries[1]) - lifted_algorithm(database, union_of_cnf(new_queries))
+                # return lifted_algorithm(database, union_of_cnf(new_queries))
+                return lifted_algorithm(database, new_queries[0]) + lifted_algorithm(database, new_queries[1]) - lifted_algorithm(database, union_of_cnf(new_queries))
             else:
                 new_queries = split_by_connected_components(tables, variables, cc)
                 return lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
         else:
-            return get_probability(database, query)
+            _, prob = get_probability(database, query)
+            return prob
