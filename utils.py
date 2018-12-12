@@ -1,4 +1,5 @@
 from query_parser import *
+import itertools
 
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]

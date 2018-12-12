@@ -5,6 +5,7 @@ import numpy as np
 import query
 import copy
 from utils import *
+import itertools
 
 
 
@@ -133,6 +134,18 @@ def get_probability_union_of_cnfs(database, query):
     solution = 1-(1-orfunct).prod()
     return orfunct, solution
 
+def inclusion_exclusion(database, query):
+    tables = [q.tables for q in query]
+    variables = [q.variables for q in query]
+    new_query_family = list()
+
+    for i in xrange(len(query)):
+        new_query_family.append([union_of_cnf(pair) for pair in itertools.combinations(query, i+1)])
+    return new_query_family
+
+
+
+
 def lifted_algorithm(database, query):
     tables = query.tables
     variables = query.variables
@@ -175,6 +188,7 @@ def lifted_algorithm(database, query):
         if len(cc) > 1:
             cc_tables = list()
             new_queries = split_by_connected_components(tables, variables, cc)
+            new_query_family = inclusion_exclusion(database, new_queries)
             print new_queries
             #solve_cnf_query(database, new_queries)
             for i in xrange(len(cc)):
