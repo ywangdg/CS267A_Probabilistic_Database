@@ -134,7 +134,7 @@ def get_probability_union_of_cnfs(database, query):
     solution = 1-(1-orfunct).prod()
     return orfunct, solution
 
-def inclusion_exclusion(database, query):
+def inclusion_exclusion(query):
     tables = [q.tables for q in query]
     variables = [q.variables for q in query]
     new_query_family = list()
@@ -142,6 +142,25 @@ def inclusion_exclusion(database, query):
     for i in xrange(len(query)):
         new_query_family.append([union_of_cnf(pair) for pair in itertools.combinations(query, i+1)])
     return new_query_family
+
+def get_independent_query_from_cc(query, connected_components):
+    rest_queries = list()
+    tables_list = [q.tables[0] for q in query]
+    print [q.variables for q in query]
+    print connected_components
+
+    independent_queries = list()
+    for i in xrange(len(connected_components)):
+        intersection_list = list()
+        for j in xrange(len(tables_list)):
+            if intersection(query[i].tables[0], tables_list[j]) != [] and i != j:
+                intersection_list.append(j)
+        if len(intersection_list) == 0:
+            independent_queries.append(query[i])
+        else:
+            rest_queries.append(query[i])
+
+    return independent_queries, rest_queries
 
 
 
@@ -187,19 +206,44 @@ def lifted_algorithm(database, query):
         cc = connected_components_of_cnf(variables[0])
         if len(cc) > 1:
             cc_tables = list()
-            new_queries = split_by_connected_components(tables, variables, cc)
-            new_query_family = inclusion_exclusion(database, new_queries)
-            print new_queries
-            #solve_cnf_query(database, new_queries)
-            for i in xrange(len(cc)):
-                cc_tables.append([tables[0][j] for j in cc[i]])
-            if not independent(cc_tables[0], cc_tables[1]):
-                # return lifted_algorithm(database, union_of_cnf(new_queries))
-                print 2
-                return lifted_algorithm(database, new_queries[0]) + lifted_algorithm(database, new_queries[1]) - lifted_algorithm(database, union_of_cnf(new_queries))
-            else:
+            print cc
 
-                return lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
+            new_queries = split_by_connected_components(tables, variables, cc)
+            independent_queries, rest_queries = get_independent_query_from_cc(new_queries, cc)
+            print independent_queries
+            print rest_queries
+            new_query_family = inclusion_exclusion(rest_queries)
+            print len(new_query_family)
+            #
+            independent_prod = 1
+            for query in independent_queries:
+                prob = lifted_algorithm(database, query)
+                independent_prod *= prob
+
+            if len(rest_queries) == 0:
+                return independent_prod
+
+            else:
+                inclusion_exclusion_result = 0
+                for i in xrange(len(new_query_family)):
+                    for query in new_query_family[i]:
+                        res = lifted_algorithm(database, query)
+                        inclusion_exclusion_result += res* np.power(-1,i)
+                return inclusion_exclusion_result * independent_prod
+
+
+            #
+            #
+
+            #solve_cnf_query(database, new_queries)
+            # for i in xrange(len(cc)):
+            #     cc_tables.append([tables[0][j] for j in cc[i]])
+            # if not independent(cc_tables[0], cc_tables[1]):
+            #     # return lifted_algorithm(database, union_of_cnf(new_queries))
+            #     return lifted_algorithm(database, new_queries[0]) + lifted_algorithm(database, new_queries[1]) - lifted_algorithm(database, union_of_cnf(new_queries))
+            # else:
+            #
+            #     return lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
         else:
             _, prob = get_probability(database, query)
             return prob

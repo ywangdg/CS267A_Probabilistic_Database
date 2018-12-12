@@ -1,1 +1,1 @@
-P(x), R(x) || Q(x), R(x)
+R(x), S(x,y), P(z), Q(z), R(a), T(a)
