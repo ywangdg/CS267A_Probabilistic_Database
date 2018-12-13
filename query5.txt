@@ -1,1 +1,1 @@
-P(x) || Q(y), R(x,y) || T(x)
+P(x) || Q(y), R(x,y) || T(x), R(x,y)

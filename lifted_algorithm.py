@@ -124,13 +124,15 @@ def get_probability_union_of_cnfs(database, query):
 
     data_frames = [database[tables[i][j]][['Prob']].add_suffix(str(tables[i][j])) for j in xrange(len(tables[i])) for i in xrange(len(tables)) ]
     result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
-
+    result = result.fillna(0)
+    print result
     product = 1
     for col in list(result.columns):
             product = product * (1-result[col])
 
     orfunct= 1- product
     solution = 1-(1-orfunct).prod()
+    print orfunct
     return orfunct, solution
 
 def inclusion_exclusion(query):
@@ -186,10 +188,9 @@ def get_independent_query_from_cc_for_unions(query, connected_components):
 def get_probability_unions(database, query):
     tables = query.tables
     variables = query.variables
-    print get_grounding_for_or(variables)
 
     for i in xrange(len(query.tables)):
-        print query.tables[i], query.variables[i]
+        print 1
 
 
 def lifted_algorithm(database, query):
@@ -203,8 +204,8 @@ def lifted_algorithm(database, query):
         independent_queries, rest_queries = get_independent_query_from_cc_for_unions(new_queries,cc_of_cnf_unions)
 
         independent_prod = 1
-        for query in independent_queries:
-            get_probability_unions(database, query)
+        for x in independent_queries:
+            get_probability_unions(database, x)
 
 
         if len(cc_of_cnf_unions) == 1:
