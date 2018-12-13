@@ -40,9 +40,12 @@ def simplify_table_intersect(database, query):
 
     rest_query = Query(rest_query_tables, rest_variable_list)
     rest_result_df, x = get_probability_union_of_cnfs(database, rest_query)
-    seperator_df, prob = get_probability(database, seperator_query)
 
-    return 1 - (1 - rest_result_df * seperator_df).prod()
+    seperator_df, prob = get_probability(database, seperator_query)
+    print seperator_df
+    print "---"
+    print 1 - (1 - rest_result_df * seperator_df['Total_Prob']).prod()
+    return 1 - (1 - rest_result_df * seperator_df['Total_Prob']).prod()
 
     # return lifted_algorithm(database, query_1) + lifted_algorithm(database, query_1) - lifted_algorithm(database, query_3)
 
@@ -172,22 +175,23 @@ def get_df_for_unions(database, query):
         df = get_probability(database,cnf_list[i])[0]
         df = df.rename(index=str, columns={"Total_Prob": str(i)})
         data_frames.append(df)
-    print data_frames
     # data_frames = [get_probability(database,cnf)[0] for cnf in cnf_list]
-    # result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
-    # print result
+    result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
+    result = result.fillna(0)
+    product = 1
+    for col in list(result.columns):
+            product = product * (1-result[col])
+    orfunct= 1- product
+    return orfunct
+
 
 def get_probability_for_unions(database, query):
     tables = query.tables
     variables = query.variables
     variable_column_mapping_list = query.variable_column_mapping_list
-    print variable_column_mapping_list
-
-    print tables, variables
 
     if len(query.tables) == 1:
         df, prob = get_probability(database, query)
-        print df, prob
         return prob
     else:
         separator = intersection_multiple_list(tables)
@@ -195,43 +199,34 @@ def get_probability_for_unions(database, query):
             print "unliftable"
             sys.exit(0)
         else:
-            print separator
             seperator_var = [[var for var in query.variable_column_mapping_list[0][table].keys()] for table in separator]
-            print seperator_var
             seperator_query = Query([separator], [seperator_var])
             rest_query_tables = copy.deepcopy(tables)
             for cnf_tables in rest_query_tables:
                 for table in separator:
                     cnf_tables.remove(table)
-            print rest_query_tables
 
             rest_variable_index_list = list()
             for i in xrange(len(query.variables)):
                 cnf_intersection_index_list = list()
                 for table in query.tables[i]:
-                    print table
                     if not table in separator:
                         intersect_index = index_of_intersection(query.variable_column_mapping_list[i][table].keys(), query.variable_column_mapping_list[i][table].keys())
-                        print intersect_index
                         cnf_intersection_index_list.append(intersect_index)
                 rest_variable_index_list.append(cnf_intersection_index_list)
-            # #
-            # #
 
-            print rest_variable_index_list
             rest_variable_list = list()
-            print variables
             for i in xrange(len(rest_variable_index_list)):
                 index_list = list()
                 for j in xrange(len(rest_variable_index_list[i])):
                     index_list.append(variables[i][j])
                 rest_variable_list.append(index_list)
                 #rest_variable_list.append([[variables[i][index] for index in index_list]  for index_list in rest_variable_index_list[i]])
-            print rest_variable_list
 
             rest_query = Query(rest_query_tables, rest_variable_list)
             seperator_df, prob = get_probability(database, seperator_query)
-            get_df_for_unions(database, rest_query)
+            rest_df = get_df_for_unions(database, rest_query)
+            return 1 - (1 - rest_df * seperator_df['Total_Prob']).prod()
 
 def lifted_algorithm(database, query):
     tables = query.tables
@@ -239,42 +234,39 @@ def lifted_algorithm(database, query):
     #To be done
     if len(variables) > 1:
         cc_of_cnf_unions =  connected_components(tables)
-        print cc_of_cnf_unions
         new_queries = split_by_connected_components_union_of_cnfs(tables, variables, cc_of_cnf_unions)
 
 
         prod = 1
         for union_query in new_queries:
-            #get_probability_for_unions(database, union_query)
             prod *= (1 - get_probability_for_unions(database, union_query))
 
-        print 1 - prod
-
+        return 1 - prod
 
             #solve_unions_query(databse, new_queries)
         # Special case for now when we have 2 clauses
-        if len(variables) == 2:
-            #case 1:
-            cnf_queries = decompose_or(query)
-            query1 = cnf_queries[0]
-            query2 = cnf_queries[1]
-            table_intersection =  intersection(query1.tables[0], query2.tables[0])
-            variable_intersection = intersection(query1.variables[0][0], query2.variables[0][0])
-            if table_intersection == []:
-                if variable_intersection == []:
-                    return 1 - (1 - lifted_algorithm(database, query1))*(1 - lifted_algorithm(database, query2))
-                else:
-                    _, prob = get_probability_union_of_cnfs(database, query)
-                    return prob
-            #case 3:
-            #We have dependent union of clauses with different variables in each clause.
-            #table_intersection != [] and variable_intersection == []:
-            else:
-                print "simplify"
-                return simplify_table_intersect(database, query)
-        else:
-            print "Not liftable for more than 2 cnf clauses right now"
-            sys.exit(0)
+        # if len(variables) == 2:
+        #     #case 1:
+        #     cnf_queries = decompose_or(query)
+        #     query1 = cnf_queries[0]
+        #     query2 = cnf_queries[1]
+        #     table_intersection =  intersection(query1.tables[0], query2.tables[0])
+        #     variable_intersection = intersection(query1.variables[0][0], query2.variables[0][0])
+        #     if table_intersection == []:
+        #         if variable_intersection == []:
+        #             return 1 - (1 - lifted_algorithm(database, query1))*(1 - lifted_algorithm(database, query2))
+        #         else:
+        #             _, prob = get_probability_union_of_cnfs(database, query)
+        #             return prob
+        #     #case 3:
+        #     #We have dependent union of clauses with different variables in each clause.
+        #     #table_intersection != [] and variable_intersection == []:
+        #     else:
+        #         print "simplify"
+        #         return simplify_table_intersect(database, query)
+        # else:
+        #     print "Not liftable for more than 2 cnf clauses right now"
+        #     sys.exit(0)
     else:
         cc = connected_components(variables[0])
         print cc
