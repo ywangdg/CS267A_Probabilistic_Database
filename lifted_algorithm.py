@@ -64,9 +64,9 @@ def get_probability(database, CNF_Query):
             database[name].index.name = 'Var1'
             database[name]["Prob"]= (1-database[name]["NegProb"])
 
-        data_frames = [database[tables[0][i]][['Prob']].add_suffix(str(i)) for i in xrange(len(tables[0])) ]
-
+        data_frames = [database[tables[0][i]][['Prob']].add_suffix(str(i)) for i in xrange(len(tables[0]))]
         result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='inner'), data_frames)
+
         result["Total_Prob"]=1
         for column in result:
             if ('Var' not in result[column].name and result[column].name!='Total_Prob'):
@@ -74,8 +74,7 @@ def get_probability(database, CNF_Query):
                 result["Total_Prob"]=result["Total_Prob"]*result[column]
 
         solution=1-(1-(result["Total_Prob"])).prod()
-        print result["Total_Prob"]
-        return result["Total_Prob"] ,solution
+        return result[["Total_Prob"]] ,solution
 
 
 def union_of_cnf(cnf_queries):
@@ -84,22 +83,7 @@ def union_of_cnf(cnf_queries):
     return Query(union_tables, union_variables)
 
 
-def decompose_or(union_cnf_query):
-    cnf_tables = [[table] for table in union_cnf_query.tables]
-    cnf_variables = [[variables] for variables in union_cnf_query.variables]
-    assert(len(cnf_tables) == len(cnf_variables))
-    cnf_queries = list()
-    for i in xrange(len(cnf_tables)):
-        cnf_queries.append(Query(cnf_tables[i], cnf_variables[i]))
-    return cnf_queries
 
-def conjunction_of_cnf(cnf_queries):
-    cnf_tables = list()
-    cnf_variables = list()
-    for query in cnf_queries:
-        cnf_tables += query.tables[0]
-        cnf_variables += query.variables[0]
-    return Query([cnf_tables], [cnf_variables])
 
 def get_probability_union_of_cnfs(database, query):
     tables = query.tables
@@ -124,7 +108,6 @@ def get_probability_union_of_cnfs(database, query):
             database[table]["Prob"]= (1-database[table]["NegProb"])
 
     data_frames = [database[tables[i][j]][['Prob']].add_suffix(str(tables[i][j])) for j in xrange(len(tables[i])) for i in xrange(len(tables)) ]
-    print data_frames
     result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
     result = result.fillna(0)
     product = 1
@@ -133,7 +116,6 @@ def get_probability_union_of_cnfs(database, query):
 
     orfunct= 1- product
     solution = 1-(1-orfunct).prod()
-    print orfunct
     return orfunct, solution
 
 def inclusion_exclusion(query):
@@ -162,12 +144,7 @@ def get_independent_query_from_cc(query, connected_components):
 
     return independent_queries, rest_queries
 
-def completely_independent(table_list1, table_list2):
-    for table1 in table_list1:
-        for table2 in table_list2:
-            if not independent(table1, table2):
-                return False
-    return True
+
 
 def get_independent_query_from_cc_for_unions(query, connected_components):
     tables_list = [q.tables for q in query]
@@ -189,7 +166,16 @@ def get_independent_query_from_cc_for_unions(query, connected_components):
 def get_df_for_unions(database, query):
     tables = query.tables
     variables = query.variables
-    print tables, variables
+    cnf_list = decompose_or(query)
+    data_frames = list()
+    for i in xrange(len(cnf_list)):
+        df = get_probability(database,cnf_list[i])[0]
+        df = df.rename(index=str, columns={"Total_Prob": str(i)})
+        data_frames.append(df)
+    print data_frames
+    # data_frames = [get_probability(database,cnf)[0] for cnf in cnf_list]
+    # result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
+    # print result
 
 def get_probability_for_unions(database, query):
     tables = query.tables

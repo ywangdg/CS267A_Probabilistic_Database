@@ -22,6 +22,13 @@ def independent(table1, table2):
         return True
     return False
 
+def completely_independent(table_list1, table_list2):
+    for table1 in table_list1:
+        for table2 in table_list2:
+            if not independent(table1, table2):
+                return False
+    return True
+
 def union(a, b):
     """ return the union of two lists """
     return list(set(a) | set(b))
@@ -57,23 +64,6 @@ def connected_components(variables):
 
     return res
 
-# def connected_components_of_cnf(variables):
-#     print variables
-#     res = list()
-#     visited = [0] * len(variables)
-#     for i in xrange(len(variables)):
-#         if not visited[i]:
-#             cc = list()
-#             cc.append(i)
-#             for j in xrange(i+1, len(variables)):
-#                 for c in cc:
-#                     if intersection(variables[c], variables[j]) != []:
-#                         visited[j] = 1
-#                         cc.append(j)
-#                         break
-#             res.append(cc)
-#     return res
-
 def connected_components_of_cnf_unions(variables):
     print variables
     var_list = []
@@ -83,8 +73,6 @@ def connected_components_of_cnf_unions(variables):
     # print [var[0] for var in variables]
     # print connected_components_of_cnf(var_list)
     return   connected_components_of_cnf([var[0] for var in variables])
-
-
 
 def get_grounding_for_or(variables):
     return intersection_multiple_list([var[0] for var in variables])
@@ -118,3 +106,20 @@ def split_by_connected_components_union_of_cnfs(tables, variables, connected_com
     for i in xrange(len(new_tables)):
         new_queries.append(Query(new_tables[i], new_vars[i]))
     return new_queries
+
+def decompose_or(union_cnf_query):
+    cnf_tables = [[table] for table in union_cnf_query.tables]
+    cnf_variables = [[variables] for variables in union_cnf_query.variables]
+    assert(len(cnf_tables) == len(cnf_variables))
+    cnf_queries = list()
+    for i in xrange(len(cnf_tables)):
+        cnf_queries.append(Query(cnf_tables[i], cnf_variables[i]))
+    return cnf_queries
+
+def conjunction_of_cnf(cnf_queries):
+    cnf_tables = list()
+    cnf_variables = list()
+    for query in cnf_queries:
+        cnf_tables += query.tables[0]
+        cnf_variables += query.variables[0]
+    return Query([cnf_tables], [cnf_variables])
