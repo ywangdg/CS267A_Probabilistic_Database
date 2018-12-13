@@ -44,7 +44,7 @@ def cc_loop(variables, res):
                         return res
     return res
 
-def connected_components_of_cnf(variables):
+def connected_components(variables):
     res = list()
     for i in xrange(len(variables)):
         res.append([i])
@@ -79,9 +79,9 @@ def connected_components_of_cnf_unions(variables):
     var_list = []
     for var in variables:
         var_list += var
-    print var_list
+    # print var_list
     # print [var[0] for var in variables]
-    print connected_components_of_cnf(var_list)
+    # print connected_components_of_cnf(var_list)
     return   connected_components_of_cnf([var[0] for var in variables])
 
 

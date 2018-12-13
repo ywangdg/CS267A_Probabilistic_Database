@@ -185,12 +185,18 @@ def get_independent_query_from_cc_for_unions(query, connected_components):
 
     return independent_queries, rest_queries
 
-def get_probability_unions(database, query):
+def get_probability_for_unions(database, query):
     tables = query.tables
     variables = query.variables
 
+    print tables, variables
+
+    if len(query.tables) == 1:
+        df, prob = get_probability(database, query)
+        print df, prob
+        return prob
     for i in xrange(len(query.tables)):
-        print 1
+        print i
 
 
 def lifted_algorithm(database, query):
@@ -198,20 +204,17 @@ def lifted_algorithm(database, query):
     variables = query.variables
     #To be done
     if len(variables) > 1:
-        cc_of_cnf_unions =  connected_components_of_cnf_unions(variables)
+        cc_of_cnf_unions =  connected_components(tables)
         print cc_of_cnf_unions
         new_queries = split_by_connected_components_union_of_cnfs(tables, variables, cc_of_cnf_unions)
-        independent_queries, rest_queries = get_independent_query_from_cc_for_unions(new_queries,cc_of_cnf_unions)
-
-        independent_prod = 1
-        for x in independent_queries:
-            get_probability_unions(database, x)
 
 
-        if len(cc_of_cnf_unions) == 1:
-            print 1
-        else:
-            print 2
+        prod = 1
+        for union_query in new_queries:
+            #get_probability_for_unions(database, union_query)
+            prod *= (1 - get_probability_for_unions(database, union_query))
+
+        print 1 - prod
 
 
             #solve_unions_query(databse, new_queries)
@@ -239,7 +242,7 @@ def lifted_algorithm(database, query):
             print "Not liftable for more than 2 cnf clauses right now"
             sys.exit(0)
     else:
-        cc = connected_components_of_cnf(variables[0])
+        cc = connected_components(variables[0])
         print cc
         if len(cc) > 1:
             cc_tables = list()
