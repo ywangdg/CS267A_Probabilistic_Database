@@ -4,62 +4,9 @@ import sys
 import numpy as np
 import query
 import copy
+from utils import *
+import itertools
 
-def intersection(lst1, lst2):
-    lst3 = [value for value in lst1 if value in lst2]
-    return lst3
-
-def index_of_intersection(lst1, lst2):
-    lst3 = [lst1.index(value) for value in lst1 if value in lst2]
-    return lst3
-
-def intersection_multiple_list(lst_of_list):
-    result = lst_of_list[0]
-    for lst in lst_of_list:
-        result = intersection(result, lst)
-    return result
-
-
-def union(a, b):
-    """ return the union of two lists """
-    return list(set(a) | set(b))
-
-def is_variable(var):
-    if (len(var) == 1 and var.isalpha()) or (len(var) ==2 and var[0].isalpha() and var[1].isdigit()):
-        return True
-    return False
-
-def independent(table1, table2):
-    if intersection(table1, table2) == []:
-        return True
-    return False
-
-def connected_components(variables):
-    res = list()
-    visited = [0] * len(variables)
-    for i in xrange(len(variables)):
-        if not visited[i]:
-            cc = list()
-            cc.append(i)
-            for j in xrange(i+1, len(variables)):
-                for c in cc:
-                    if intersection(variables[c], variables[j]) != []:
-                        visited[j] = 1
-                        cc.append(j)
-                        break
-            res.append(cc)
-    return res
-
-def get_seperator(variables):
-    sets = iter(map(set, variables))
-    result = sets.next()
-    print result
-    for s in sets:
-        result = result.intersection(s)
-    return list(result)
-
-def get_grounding_for_or(variables):
-    return get_seperator([var[0] for var in variables])
 
 # When simplify is called, we know we have a disjunction in our query with a shared table such as:
 # [T(x1),Q(x1,y1)]||[S(x2),Q(x2,y2)]
@@ -92,15 +39,12 @@ def simplify_table_intersect(database, query):
         rest_variable_list.append([[seperator_var[index] for index in index_list]  for index_list in rest_variable_index_list[i]])
 
     rest_query = Query(rest_query_tables, rest_variable_list)
-    rest_result_df, x = two_tables_or(database, rest_query)
+    rest_result_df, x = get_probability_union_of_cnfs(database, rest_query)
     seperator_df, prob = get_probability(database, seperator_query)
 
     return 1 - (1 - rest_result_df * seperator_df).prod()
 
     # return lifted_algorithm(database, query_1) + lifted_algorithm(database, query_1) - lifted_algorithm(database, query_3)
-
-def get_groupby_variables(separator, mapping):
-    return  [[mapping[i][var] for var in separator] for i in mapping]
 
 
 def get_probability(database, CNF_Query):
@@ -132,17 +76,6 @@ def get_probability(database, CNF_Query):
         solution=1-(1-(result["Total_Prob"])).prod()
         return result["Total_Prob"] ,solution
 
-def split_by_connected_components(tables, variables, connected_components):
-    new_queries = list()
-    new_tables = list()
-    new_vars = list()
-    for i in xrange(len(connected_components)):
-        new_tables.append([tables[0][j] for j in connected_components[i]])
-        new_vars.append([variables[0][j] for j in connected_components[i]])
-    assert(len(new_tables) == len(new_vars))
-    for i in xrange(len(new_tables)):
-        new_queries.append(Query([new_tables[i]], [new_vars[i]]))
-    return new_queries
 
 def union_of_cnf(cnf_queries):
     union_tables = [query.tables[0] for query in cnf_queries ]
@@ -167,7 +100,7 @@ def conjunction_of_cnf(cnf_queries):
         cnf_variables += query.variables[0]
     return Query([cnf_tables], [cnf_variables])
 
-def two_tables_or(database, query):
+def get_probability_union_of_cnfs(database, query):
     tables = query.tables
     assert (len(tables)==2)
     assert (len(tables[0])==1)
@@ -180,8 +113,6 @@ def two_tables_or(database, query):
     for i in xrange(len(mapping)):
         grounding_var_list.append([mapping[i][key][grounding[0]] for key in mapping[i].keys()])
 
-    print grounding_var_list
-
     for i in xrange(len(tables)):
         for j in  xrange(len(tables[i])):
             table = tables[i][j]
@@ -193,20 +124,97 @@ def two_tables_or(database, query):
 
     data_frames = [database[tables[i][j]][['Prob']].add_suffix(str(tables[i][j])) for j in xrange(len(tables[i])) for i in xrange(len(tables)) ]
     result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
-
+    result = result.fillna(0)
+    print result
     product = 1
     for col in list(result.columns):
             product = product * (1-result[col])
 
     orfunct= 1- product
     solution = 1-(1-orfunct).prod()
+    print orfunct
     return orfunct, solution
+
+def inclusion_exclusion(query):
+    tables = [q.tables for q in query]
+    variables = [q.variables for q in query]
+    new_query_family = list()
+
+    for i in xrange(len(query)):
+        new_query_family.append([union_of_cnf(pair) for pair in itertools.combinations(query, i+1)])
+    return new_query_family
+
+def get_independent_query_from_cc(query, connected_components):
+    rest_queries = list()
+    tables_list = [q.tables[0] for q in query]
+
+    independent_queries = list()
+    for i in xrange(len(connected_components)):
+        intersection_list = list()
+        for j in xrange(len(tables_list)):
+            if intersection(query[i].tables[0], tables_list[j]) != [] and i != j:
+                intersection_list.append(j)
+        if len(intersection_list) == 0:
+            independent_queries.append(query[i])
+        else:
+            rest_queries.append(query[i])
+
+    return independent_queries, rest_queries
+
+def completely_independent(table_list1, table_list2):
+    for table1 in table_list1:
+        for table2 in table_list2:
+            if not independent(table1, table2):
+                return False
+    return True
+
+def get_independent_query_from_cc_for_unions(query, connected_components):
+    tables_list = [q.tables for q in query]
+    independent_queries = list()
+    rest_queries = list()
+    for i in xrange(len(connected_components)):
+        intersection_list = list()
+        for j in xrange(len(tables_list)):
+            if not completely_independent(tables_list[i], tables_list[j]) and i!=j:
+                intersection_list.append(j)
+        if len(intersection_list) == 0:
+            independent_queries.append(query[i])
+        else:
+            rest_queries.append(query[i])
+
+
+    return independent_queries, rest_queries
+
+def get_probability_unions(database, query):
+    tables = query.tables
+    variables = query.variables
+
+    for i in xrange(len(query.tables)):
+        print 1
+
 
 def lifted_algorithm(database, query):
     tables = query.tables
     variables = query.variables
     #To be done
     if len(variables) > 1:
+        cc_of_cnf_unions =  connected_components_of_cnf_unions(variables)
+        print cc_of_cnf_unions
+        new_queries = split_by_connected_components_union_of_cnfs(tables, variables, cc_of_cnf_unions)
+        independent_queries, rest_queries = get_independent_query_from_cc_for_unions(new_queries,cc_of_cnf_unions)
+
+        independent_prod = 1
+        for x in independent_queries:
+            get_probability_unions(database, x)
+
+
+        if len(cc_of_cnf_unions) == 1:
+            print 1
+        else:
+            print 2
+
+
+            #solve_unions_query(databse, new_queries)
         # Special case for now when we have 2 clauses
         if len(variables) == 2:
             #case 1:
@@ -219,7 +227,7 @@ def lifted_algorithm(database, query):
                 if variable_intersection == []:
                     return 1 - (1 - lifted_algorithm(database, query1))*(1 - lifted_algorithm(database, query2))
                 else:
-                    _, prob = two_tables_or(database, query)
+                    _, prob = get_probability_union_of_cnfs(database, query)
                     return prob
             #case 3:
             #We have dependent union of clauses with different variables in each clause.
@@ -231,18 +239,40 @@ def lifted_algorithm(database, query):
             print "Not liftable for more than 2 cnf clauses right now"
             sys.exit(0)
     else:
-        cc = connected_components(variables[0])
+        cc = connected_components_of_cnf(variables[0])
+        print cc
         if len(cc) > 1:
             cc_tables = list()
-            for i in xrange(len(cc)):
-                cc_tables.append([tables[0][j] for j in cc[i]])
-            if not independent(cc_tables[0], cc_tables[1]):
-                new_queries = split_by_connected_components(tables, variables, cc)
-                # return lifted_algorithm(database, union_of_cnf(new_queries))
-                return lifted_algorithm(database, new_queries[0]) + lifted_algorithm(database, new_queries[1]) - lifted_algorithm(database, union_of_cnf(new_queries))
+            new_queries = split_by_connected_components(tables, variables, cc)
+            independent_queries, rest_queries = get_independent_query_from_cc(new_queries, cc)
+            new_query_family = inclusion_exclusion(rest_queries)
+            print len(new_query_family)
+            #
+            independent_prod = 1
+            for query in independent_queries:
+                prob = lifted_algorithm(database, query)
+                independent_prod *= prob
+
+            if len(rest_queries) == 0:
+                return independent_prod
+
             else:
-                new_queries = split_by_connected_components(tables, variables, cc)
-                return lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
+                inclusion_exclusion_result = 0
+                for i in xrange(len(new_query_family)):
+                    for query in new_query_family[i]:
+                        res = lifted_algorithm(database, query)
+                        inclusion_exclusion_result += res* np.power(-1,i)
+                return inclusion_exclusion_result * independent_prod
+
+            #solve_cnf_query(database, new_queries)
+            # for i in xrange(len(cc)):
+            #     cc_tables.append([tables[0][j] for j in cc[i]])
+            # if not independent(cc_tables[0], cc_tables[1]):
+            #     # return lifted_algorithm(database, union_of_cnf(new_queries))
+            #     return lifted_algorithm(database, new_queries[0]) + lifted_algorithm(database, new_queries[1]) - lifted_algorithm(database, union_of_cnf(new_queries))
+            # else:
+            #
+            #     return lifted_algorithm(database, new_queries[0]) * lifted_algorithm(database, new_queries[1])
         else:
             _, prob = get_probability(database, query)
             return prob
