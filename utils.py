@@ -1,5 +1,6 @@
 from query_parser import *
 import itertools
+import copy
 
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
@@ -31,23 +32,56 @@ def is_variable(var):
     return False
 
 
-def connected_components_of_cnf(variables):
-    res = list()
-    visited = [0] * len(variables)
-    for i in xrange(len(variables)):
-        if not visited[i]:
-            cc = list()
-            cc.append(i)
-            for j in xrange(i+1, len(variables)):
-                for c in cc:
-                    if intersection(variables[c], variables[j]) != []:
-                        visited[j] = 1
-                        cc.append(j)
-                        break
-            res.append(cc)
+def cc_loop(variables, res):
+    for i in xrange(len(res)):
+        for index in res[i]:
+            for j in xrange(i+1, len(res)):
+                for index2 in res[j]:
+                    if intersection(variables[index], variables[index2]) != []:
+                        res[i] = res[i] + res[j]
+                        res[i].sort()
+                        res.remove(res[j])
+                        return res
     return res
 
+def connected_components_of_cnf(variables):
+    res = list()
+    for i in xrange(len(variables)):
+        res.append([i])
+
+    while(True):
+        old_res = copy.deepcopy(res)
+        res = cc_loop(variables, res)
+        if res == old_res:
+            break
+
+    return res
+
+# def connected_components_of_cnf(variables):
+#     print variables
+#     res = list()
+#     visited = [0] * len(variables)
+#     for i in xrange(len(variables)):
+#         if not visited[i]:
+#             cc = list()
+#             cc.append(i)
+#             for j in xrange(i+1, len(variables)):
+#                 for c in cc:
+#                     if intersection(variables[c], variables[j]) != []:
+#                         visited[j] = 1
+#                         cc.append(j)
+#                         break
+#             res.append(cc)
+#     return res
+
 def connected_components_of_cnf_unions(variables):
+    print variables
+    var_list = []
+    for var in variables:
+        var_list += var
+    print var_list
+    print [var[0] for var in variables]
+    print connected_components_of_cnf(var_list)
     return   connected_components_of_cnf([var[0] for var in variables])
 
 

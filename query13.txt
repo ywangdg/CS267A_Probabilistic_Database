@@ -1,1 +1,1 @@
-R(x), S(x,y), P(z), Q(z), R(a), T(a)
+R(x, y), S(y)
