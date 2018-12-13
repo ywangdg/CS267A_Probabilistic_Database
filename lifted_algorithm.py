@@ -14,38 +14,38 @@ import itertools
 # We perform inclusion exclusion and get query_1 + query_2 - query_3
 # query_1 and query_2 are easy to compute with a call to get_probability.
 # query_3 = T(x1),Q(x1,y1),S(x2),Q(x2,y2), which is solved with a recurive call to lifted_algorithm.
-def simplify_table_intersect(database, query):
-    table_intersection =  intersection(query.tables[0], query.tables[1])[0]
-    seperator_var = [var for var in query.variable_column_mapping_list[0][table_intersection].keys()]
-    seperator_query = Query([[table_intersection]], [[seperator_var]])
-    query_tables = copy.deepcopy(query.tables)
-    for cnf_tables in query_tables:
-        cnf_tables.remove(table_intersection)
-
-    rest_query_tables = query_tables
-
-    rest_variable_index_list = list()
-    for i in xrange(len(query.variables)):
-        cnf_intersection_index_list = list()
-        for table in query.tables[i]:
-            if table != table_intersection:
-                intersect_index = index_of_intersection(query.variable_column_mapping_list[i][table_intersection].keys(), query.variable_column_mapping_list[i][table].keys())
-                cnf_intersection_index_list.append(intersect_index)
-        rest_variable_index_list.append(cnf_intersection_index_list)
-
-
-    rest_variable_list = list()
-    for i in xrange(len(rest_variable_index_list)):
-        rest_variable_list.append([[seperator_var[index] for index in index_list]  for index_list in rest_variable_index_list[i]])
-
-    rest_query = Query(rest_query_tables, rest_variable_list)
-    rest_result_df, x = get_probability_union_of_cnfs(database, rest_query)
-
-    seperator_df, prob = get_probability(database, seperator_query)
-    print seperator_df
-    print "---"
-    print 1 - (1 - rest_result_df * seperator_df['Total_Prob']).prod()
-    return 1 - (1 - rest_result_df * seperator_df['Total_Prob']).prod()
+# def simplify_table_intersect(database, query):
+#     table_intersection =  intersection(query.tables[0], query.tables[1])[0]
+#     seperator_var = [var for var in query.variable_column_mapping_list[0][table_intersection].keys()]
+#     seperator_query = Query([[table_intersection]], [[seperator_var]])
+#     query_tables = copy.deepcopy(query.tables)
+#     for cnf_tables in query_tables:
+#         cnf_tables.remove(table_intersection)
+#
+#     rest_query_tables = query_tables
+#
+#     rest_variable_index_list = list()
+#     for i in xrange(len(query.variables)):
+#         cnf_intersection_index_list = list()
+#         for table in query.tables[i]:
+#             if table != table_intersection:
+#                 intersect_index = index_of_intersection(query.variable_column_mapping_list[i][table_intersection].keys(), query.variable_column_mapping_list[i][table].keys())
+#                 cnf_intersection_index_list.append(intersect_index)
+#         rest_variable_index_list.append(cnf_intersection_index_list)
+#
+#
+#     rest_variable_list = list()
+#     for i in xrange(len(rest_variable_index_list)):
+#         rest_variable_list.append([[seperator_var[index] for index in index_list]  for index_list in rest_variable_index_list[i]])
+#
+#     rest_query = Query(rest_query_tables, rest_variable_list)
+#     rest_result_df, x = get_probability_union_of_cnfs(database, rest_query)
+#
+#     seperator_df, prob = get_probability(database, seperator_query)
+#     print seperator_df
+#     print "---"
+#     print 1 - (1 - rest_result_df * seperator_df['Total_Prob']).prod()
+#     return 1 - (1 - rest_result_df * seperator_df['Total_Prob']).prod()
 
     # return lifted_algorithm(database, query_1) + lifted_algorithm(database, query_1) - lifted_algorithm(database, query_3)
 
@@ -79,47 +79,39 @@ def get_probability(database, CNF_Query):
         solution=1-(1-(result["Total_Prob"])).prod()
         return result[["Total_Prob"]] ,solution
 
-
-def union_of_cnf(cnf_queries):
-    union_tables = [query.tables[0] for query in cnf_queries ]
-    union_variables = [query.variables[0] for query in cnf_queries ]
-    return Query(union_tables, union_variables)
-
-
-
-
-def get_probability_union_of_cnfs(database, query):
-    tables = query.tables
-    assert (len(tables)==2)
-    assert (len(tables[0])==1)
-    assert (len(tables[1])==1)
-
-    variables = query.variables
-    mapping = query.variable_column_mapping_list
-    grounding = get_grounding_for_or(variables)
-    grounding_var_list = list()
-    for i in xrange(len(mapping)):
-        grounding_var_list.append([mapping[i][key][grounding[0]] for key in mapping[i].keys()])
-
-    for i in xrange(len(tables)):
-        for j in  xrange(len(tables[i])):
-            table = tables[i][j]
-            database[table]["NegProb"]= (1-database[table]["Prob"])
-            #
-            database[table]=database[table].groupby(grounding_var_list[i][j]).prod()
-            database[table].index.name = 'Var1'
-            database[table]["Prob"]= (1-database[table]["NegProb"])
-
-    data_frames = [database[tables[i][j]][['Prob']].add_suffix(str(tables[i][j])) for j in xrange(len(tables[i])) for i in xrange(len(tables)) ]
-    result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
-    result = result.fillna(0)
-    product = 1
-    for col in list(result.columns):
-            product = product * (1-result[col])
-
-    orfunct= 1- product
-    solution = 1-(1-orfunct).prod()
-    return orfunct, solution
+#
+# def get_probability_union_of_cnfs(database, query):
+#     tables = query.tables
+#     assert (len(tables)==2)
+#     assert (len(tables[0])==1)
+#     assert (len(tables[1])==1)
+#
+#     variables = query.variables
+#     mapping = query.variable_column_mapping_list
+#     grounding = get_grounding_for_or(variables)
+#     grounding_var_list = list()
+#     for i in xrange(len(mapping)):
+#         grounding_var_list.append([mapping[i][key][grounding[0]] for key in mapping[i].keys()])
+#
+#     for i in xrange(len(tables)):
+#         for j in  xrange(len(tables[i])):
+#             table = tables[i][j]
+#             database[table]["NegProb"]= (1-database[table]["Prob"])
+#             #
+#             database[table]=database[table].groupby(grounding_var_list[i][j]).prod()
+#             database[table].index.name = 'Var1'
+#             database[table]["Prob"]= (1-database[table]["NegProb"])
+#
+#     data_frames = [database[tables[i][j]][['Prob']].add_suffix(str(tables[i][j])) for j in xrange(len(tables[i])) for i in xrange(len(tables)) ]
+#     result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
+#     result = result.fillna(0)
+#     product = 1
+#     for col in list(result.columns):
+#             product = product * (1-result[col])
+#
+#     orfunct= 1- product
+#     solution = 1-(1-orfunct).prod()
+#     return orfunct, solution
 
 def inclusion_exclusion(query):
     tables = [q.tables for q in query]
@@ -146,7 +138,6 @@ def get_independent_query_from_cc(query, connected_components):
             rest_queries.append(query[i])
 
     return independent_queries, rest_queries
-
 
 
 def get_independent_query_from_cc_for_unions(query, connected_components):
@@ -269,7 +260,6 @@ def lifted_algorithm(database, query):
         #     sys.exit(0)
     else:
         cc = connected_components(variables[0])
-        print cc
         if len(cc) > 1:
             cc_tables = list()
             new_queries = split_by_connected_components(tables, variables, cc)

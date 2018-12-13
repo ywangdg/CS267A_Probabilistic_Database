@@ -123,3 +123,8 @@ def conjunction_of_cnf(cnf_queries):
         cnf_tables += query.tables[0]
         cnf_variables += query.variables[0]
     return Query([cnf_tables], [cnf_variables])
+
+def union_of_cnf(cnf_queries):
+    union_tables = [query.tables[0] for query in cnf_queries ]
+    union_variables = [query.variables[0] for query in cnf_queries ]
+    return Query(union_tables, union_variables)
