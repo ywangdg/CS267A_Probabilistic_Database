@@ -74,6 +74,7 @@ def get_probability(database, CNF_Query):
                 result["Total_Prob"]=result["Total_Prob"]*result[column]
 
         solution=1-(1-(result["Total_Prob"])).prod()
+        print result["Total_Prob"]
         return result["Total_Prob"] ,solution
 
 
@@ -123,9 +124,9 @@ def get_probability_union_of_cnfs(database, query):
             database[table]["Prob"]= (1-database[table]["NegProb"])
 
     data_frames = [database[tables[i][j]][['Prob']].add_suffix(str(tables[i][j])) for j in xrange(len(tables[i])) for i in xrange(len(tables)) ]
+    print data_frames
     result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
     result = result.fillna(0)
-    print result
     product = 1
     for col in list(result.columns):
             product = product * (1-result[col])
@@ -185,9 +186,16 @@ def get_independent_query_from_cc_for_unions(query, connected_components):
 
     return independent_queries, rest_queries
 
+def get_df_for_unions(database, query):
+    tables = query.tables
+    variables = query.variables
+    print tables, variables
+
 def get_probability_for_unions(database, query):
     tables = query.tables
     variables = query.variables
+    variable_column_mapping_list = query.variable_column_mapping_list
+    print variable_column_mapping_list
 
     print tables, variables
 
@@ -195,9 +203,49 @@ def get_probability_for_unions(database, query):
         df, prob = get_probability(database, query)
         print df, prob
         return prob
-    for i in xrange(len(query.tables)):
-        print i
+    else:
+        separator = intersection_multiple_list(tables)
+        if separator == []:
+            print "unliftable"
+            sys.exit(0)
+        else:
+            print separator
+            seperator_var = [[var for var in query.variable_column_mapping_list[0][table].keys()] for table in separator]
+            print seperator_var
+            seperator_query = Query([separator], [seperator_var])
+            rest_query_tables = copy.deepcopy(tables)
+            for cnf_tables in rest_query_tables:
+                for table in separator:
+                    cnf_tables.remove(table)
+            print rest_query_tables
 
+            rest_variable_index_list = list()
+            for i in xrange(len(query.variables)):
+                cnf_intersection_index_list = list()
+                for table in query.tables[i]:
+                    print table
+                    if not table in separator:
+                        intersect_index = index_of_intersection(query.variable_column_mapping_list[i][table].keys(), query.variable_column_mapping_list[i][table].keys())
+                        print intersect_index
+                        cnf_intersection_index_list.append(intersect_index)
+                rest_variable_index_list.append(cnf_intersection_index_list)
+            # #
+            # #
+
+            print rest_variable_index_list
+            rest_variable_list = list()
+            print variables
+            for i in xrange(len(rest_variable_index_list)):
+                index_list = list()
+                for j in xrange(len(rest_variable_index_list[i])):
+                    index_list.append(variables[i][j])
+                rest_variable_list.append(index_list)
+                #rest_variable_list.append([[variables[i][index] for index in index_list]  for index_list in rest_variable_index_list[i]])
+            print rest_variable_list
+
+            rest_query = Query(rest_query_tables, rest_variable_list)
+            seperator_df, prob = get_probability(database, seperator_query)
+            get_df_for_unions(database, rest_query)
 
 def lifted_algorithm(database, query):
     tables = query.tables
