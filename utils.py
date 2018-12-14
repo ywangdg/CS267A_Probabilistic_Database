@@ -68,9 +68,6 @@ def connected_components_of_cnf_unions(variables):
     var_list = []
     for var in variables:
         var_list += var
-    # print var_list
-    # print [var[0] for var in variables]
-    # print connected_components_of_cnf(var_list)
     return   connected_components_of_cnf([var[0] for var in variables])
 
 def get_grounding_for_or(variables):

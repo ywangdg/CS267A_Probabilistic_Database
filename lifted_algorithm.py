@@ -166,7 +166,6 @@ def lifted_algorithm(database, query):
             new_queries = split_by_connected_components(tables, variables, cc)
             independent_queries, rest_queries = get_independent_query_from_cc(new_queries, cc)
             new_query_family = inclusion_exclusion(rest_queries)
-            print (len(new_query_family))
             #
             independent_prod = 1
             for query in independent_queries:
