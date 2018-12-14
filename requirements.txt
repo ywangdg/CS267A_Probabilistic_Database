@@ -1,0 +1,1 @@
+We implemented our code in Python 3.4, and also used NumPy 1.11.3, and Pandas 0.23.4. The code may work with other versions, but we did find that older versions of Pandas could cause problems.
