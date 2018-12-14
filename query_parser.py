@@ -39,6 +39,13 @@ def parse_query(query):
     sentence = lines[0]
     return sentence.strip().split("||")
 
+def print_query(query):
+    file = open(query, "r")
+    lines = file.readlines()
+    sentence = lines[0]
+    print ("The input query is " + sentence)
+
+
 def convert_query_to_class(queries):
     query_list = list()
     for query in queries:
@@ -53,7 +60,6 @@ def convert_query_to_class(queries):
             for atom in atom_raw:
                 res = re.split("\(|,| ", atom)
                 res = list(filter(None, res))
-                print (res)
                 if res:
                     table_list.append(res[0])
                     var_list.append(res[1:])

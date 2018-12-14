@@ -1,6 +1,6 @@
 // 1. To run the first query to find out if a player is making 20 million dollars or more, run the following script.
-// required files t_salary.txt query_salary.txt	
-python qeval.py -t t_salary.txt -q query_salary.txt	
+// required files t_salary.txt query_salary.txt
+python qeval.py -t t_salary.txt -q query_salary.txt
 
 
 // 2. To run the second query to find out if a player is overpaid, run the following script.
@@ -15,4 +15,3 @@ python qeval.py -t t_myteam.txt -q query_myteam.txt
 // 4. To run the fourth query ,to find the probability a player has scored 1000 points at least once in the last decade, run the following script.
 // required files t_thousand.txt ,query_thousand.txt
 python qeval.py -t t_thousand.txt -q query_thousand.txt
-

@@ -23,7 +23,6 @@ def read_table(table):
     df = pd.DataFrame(data = data, columns = columns, dtype = float)
     database[table_name] = df
 
-
 def main(argv):
     queries = []
     tables = []
@@ -45,15 +44,19 @@ def main(argv):
     for table in tables:
         read_table(table)
 
+    print ("The tables in database are:")
+    for table in database:
+        print (table, database[table])
+        print ("\n")
+
     query_list = convert_query_to_class(queries)
 
-    #check single ground atom
     res = [0] * len(query_list)
     print ("-------")
-    for query in query_list:
-        #To be done:
-        print (lifted_algorithm(database, query))
-
+    for i in range(len(query_list)):
+        print_query (queries[i])
+        print ("The probability of input query is " + str(lifted_algorithm(database, query_list[i])))
+        print ("-------")
 
 
 if __name__ == "__main__":
