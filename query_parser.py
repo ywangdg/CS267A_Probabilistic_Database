@@ -52,7 +52,8 @@ def convert_query_to_class(queries):
             var_list = list()
             for atom in atom_raw:
                 res = re.split("\(|,| ", atom)
-                res = filter(None, res)
+                res = list(filter(None, res))
+                print (res)
                 if res:
                     table_list.append(res[0])
                     var_list.append(res[1:])
@@ -60,6 +61,5 @@ def convert_query_to_class(queries):
             full_var_list.append(var_list)
 
         query_list.append(Query(full_table_list, full_var_list))
-        print query
 
     return query_list

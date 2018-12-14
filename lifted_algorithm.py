@@ -2,10 +2,10 @@ from query_parser import *
 import pandas as pd
 import sys
 import numpy as np
-import query
 import copy
 from utils import *
 import itertools
+import functools
 
 
 # When simplify is called, we know we have a disjunction in our query with a shared table such as:
@@ -25,7 +25,7 @@ import itertools
 #     rest_query_tables = query_tables
 #
 #     rest_variable_index_list = list()
-#     for i in xrange(len(query.variables)):
+#     for i in range(len(query.variables)):
 #         cnf_intersection_index_list = list()
 #         for table in query.tables[i]:
 #             if table != table_intersection:
@@ -35,7 +35,7 @@ import itertools
 #
 #
 #     rest_variable_list = list()
-#     for i in xrange(len(rest_variable_index_list)):
+#     for i in range(len(rest_variable_index_list)):
 #         rest_variable_list.append([[seperator_var[index] for index in index_list]  for index_list in rest_variable_index_list[i]])
 #
 #     rest_query = Query(rest_query_tables, rest_variable_list)
@@ -56,19 +56,19 @@ def get_probability(database, CNF_Query):
     mapping = CNF_Query.variable_column_mapping_list
     separator = intersection_multiple_list(variables[0])
     if separator == []:
-        print "Not liftable"
+        print ("Not liftable")
         sys.exit(0)
     else:
         groupby_value_list = get_groupby_variables(separator, mapping[0])
-        for i in xrange(len(tables[0])):
+        for i in range(len(tables[0])):
             name = tables[0][i]
             database[name]["NegProb"]= (1-database[name]["Prob"])
             database[name]=database[name].groupby(groupby_value_list[i][0]).prod()
             database[name].index.name = 'Var1'
             database[name]["Prob"]= (1-database[name]["NegProb"])
 
-        data_frames = [database[tables[0][i]][['Prob']].add_suffix(str(i)) for i in xrange(len(tables[0]))]
-        result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='inner'), data_frames)
+        data_frames = [database[tables[0][i]][['Prob']].add_suffix(str(i)) for i in range(len(tables[0]))]
+        result = functools.reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='inner'), data_frames)
 
         result["Total_Prob"]=1
         for column in result:
@@ -90,11 +90,11 @@ def get_probability(database, CNF_Query):
 #     mapping = query.variable_column_mapping_list
 #     grounding = get_grounding_for_or(variables)
 #     grounding_var_list = list()
-#     for i in xrange(len(mapping)):
+#     for i in range(len(mapping)):
 #         grounding_var_list.append([mapping[i][key][grounding[0]] for key in mapping[i].keys()])
 #
-#     for i in xrange(len(tables)):
-#         for j in  xrange(len(tables[i])):
+#     for i in range(len(tables)):
+#         for j in  range(len(tables[i])):
 #             table = tables[i][j]
 #             database[table]["NegProb"]= (1-database[table]["Prob"])
 #             #
@@ -102,7 +102,7 @@ def get_probability(database, CNF_Query):
 #             database[table].index.name = 'Var1'
 #             database[table]["Prob"]= (1-database[table]["NegProb"])
 #
-#     data_frames = [database[tables[i][j]][['Prob']].add_suffix(str(tables[i][j])) for j in xrange(len(tables[i])) for i in xrange(len(tables)) ]
+#     data_frames = [database[tables[i][j]][['Prob']].add_suffix(str(tables[i][j])) for j in range(len(tables[i])) for i in range(len(tables)) ]
 #     result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
 #     result = result.fillna(0)
 #     product = 1
@@ -118,7 +118,7 @@ def inclusion_exclusion(query):
     variables = [q.variables for q in query]
     new_query_family = list()
 
-    for i in xrange(len(query)):
+    for i in range(len(query)):
         new_query_family.append([union_of_cnf(pair) for pair in itertools.combinations(query, i+1)])
     return new_query_family
 
@@ -127,9 +127,9 @@ def get_independent_query_from_cc(query, connected_components):
     tables_list = [q.tables[0] for q in query]
 
     independent_queries = list()
-    for i in xrange(len(connected_components)):
+    for i in range(len(connected_components)):
         intersection_list = list()
-        for j in xrange(len(tables_list)):
+        for j in range(len(tables_list)):
             if intersection(query[i].tables[0], tables_list[j]) != [] and i != j:
                 intersection_list.append(j)
         if len(intersection_list) == 0:
@@ -144,9 +144,9 @@ def get_independent_query_from_cc_for_unions(query, connected_components):
     tables_list = [q.tables for q in query]
     independent_queries = list()
     rest_queries = list()
-    for i in xrange(len(connected_components)):
+    for i in range(len(connected_components)):
         intersection_list = list()
-        for j in xrange(len(tables_list)):
+        for j in range(len(tables_list)):
             if not completely_independent(tables_list[i], tables_list[j]) and i!=j:
                 intersection_list.append(j)
         if len(intersection_list) == 0:
@@ -162,12 +162,12 @@ def get_df_for_unions(database, query):
     variables = query.variables
     cnf_list = decompose_or(query)
     data_frames = list()
-    for i in xrange(len(cnf_list)):
+    for i in range(len(cnf_list)):
         df = get_probability(database,cnf_list[i])[0]
         df = df.rename(index=str, columns={"Total_Prob": str(i)})
         data_frames.append(df)
     # data_frames = [get_probability(database,cnf)[0] for cnf in cnf_list]
-    result = reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
+    result = functools.reduce(lambda  left,right: pd.merge(left,right,on=['Var1'],   how='outer'), data_frames)
     result = result.fillna(0)
     product = 1
     for col in list(result.columns):
@@ -187,7 +187,7 @@ def get_probability_for_unions(database, query):
     else:
         separator = intersection_multiple_list(tables)
         if separator == []:
-            print "unliftable"
+            print ("Not liftable")
             sys.exit(0)
         else:
             seperator_var = [[var for var in query.variable_column_mapping_list[0][table].keys()] for table in separator]
@@ -198,18 +198,18 @@ def get_probability_for_unions(database, query):
                     cnf_tables.remove(table)
 
             rest_variable_index_list = list()
-            for i in xrange(len(query.variables)):
+            for i in range(len(query.variables)):
                 cnf_intersection_index_list = list()
                 for table in query.tables[i]:
                     if not table in separator:
-                        intersect_index = index_of_intersection(query.variable_column_mapping_list[i][table].keys(), query.variable_column_mapping_list[i][table].keys())
+                        intersect_index = index_of_intersection(list(query.variable_column_mapping_list[i][table].keys()), list(query.variable_column_mapping_list[i][table].keys()))
                         cnf_intersection_index_list.append(intersect_index)
                 rest_variable_index_list.append(cnf_intersection_index_list)
 
             rest_variable_list = list()
-            for i in xrange(len(rest_variable_index_list)):
+            for i in range(len(rest_variable_index_list)):
                 index_list = list()
-                for j in xrange(len(rest_variable_index_list[i])):
+                for j in range(len(rest_variable_index_list[i])):
                     index_list.append(variables[i][j])
                 rest_variable_list.append(index_list)
                 #rest_variable_list.append([[variables[i][index] for index in index_list]  for index_list in rest_variable_index_list[i]])
@@ -265,7 +265,7 @@ def lifted_algorithm(database, query):
             new_queries = split_by_connected_components(tables, variables, cc)
             independent_queries, rest_queries = get_independent_query_from_cc(new_queries, cc)
             new_query_family = inclusion_exclusion(rest_queries)
-            print len(new_query_family)
+            print (len(new_query_family))
             #
             independent_prod = 1
             for query in independent_queries:
@@ -277,14 +277,14 @@ def lifted_algorithm(database, query):
 
             else:
                 inclusion_exclusion_result = 0
-                for i in xrange(len(new_query_family)):
+                for i in range(len(new_query_family)):
                     for query in new_query_family[i]:
                         res = lifted_algorithm(database, query)
                         inclusion_exclusion_result += res* np.power(-1,i)
                 return inclusion_exclusion_result * independent_prod
 
             #solve_cnf_query(database, new_queries)
-            # for i in xrange(len(cc)):
+            # for i in range(len(cc)):
             #     cc_tables.append([tables[0][j] for j in cc[i]])
             # if not independent(cc_tables[0], cc_tables[1]):
             #     # return lifted_algorithm(database, union_of_cnf(new_queries))

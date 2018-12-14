@@ -17,7 +17,7 @@ def read_table(table):
     table_name = lines[0][0]
     data = np.array(lines[1:])
     columns = []
-    for i in xrange(data.shape[1] - 1):
+    for i in range(data.shape[1] - 1):
         columns.append('Var' + str(i+1))
     columns.append('Prob')
     df = pd.DataFrame(data = data, columns = columns, dtype = float)
@@ -30,18 +30,18 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hq:t:",["query=","table="])
     except getopt.GetoptError:
-        print 'qeval.py -q <query files> -t <table files>'
+        print ('qeval.py -q <query files> -t <table files>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == "-h":
-            print 'qeval.py -q <query files> -t <table files>'
+            print ('qeval.py -q <query files> -t <table files>')
             sys.exit()
         elif opt in ("-q", "--query"):
             queries.append(arg)
         elif opt in ("-t", "--table"):
             tables.append(arg)
-    print 'Input query file is', queries
-    print 'Input table file is', tables
+    print ('Input query file is', queries)
+    print ('Input table file is', tables)
     for table in tables:
         read_table(table)
 
@@ -49,10 +49,10 @@ def main(argv):
 
     #check single ground atom
     res = [0] * len(query_list)
-    print "-------"
+    print ("-------")
     for query in query_list:
         #To be done:
-        print lifted_algorithm(database, query)
+        print (lifted_algorithm(database, query))
 
 
 

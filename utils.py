@@ -40,9 +40,9 @@ def is_variable(var):
 
 
 def cc_loop(variables, res):
-    for i in xrange(len(res)):
+    for i in range(len(res)):
         for index in res[i]:
-            for j in xrange(i+1, len(res)):
+            for j in range(i+1, len(res)):
                 for index2 in res[j]:
                     if intersection(variables[index], variables[index2]) != []:
                         res[i] = res[i] + res[j]
@@ -53,7 +53,7 @@ def cc_loop(variables, res):
 
 def connected_components(variables):
     res = list()
-    for i in xrange(len(variables)):
+    for i in range(len(variables)):
         res.append([i])
 
     while(True):
@@ -65,7 +65,6 @@ def connected_components(variables):
     return res
 
 def connected_components_of_cnf_unions(variables):
-    print variables
     var_list = []
     for var in variables:
         var_list += var
@@ -86,11 +85,11 @@ def split_by_connected_components(tables, variables, connected_components):
     new_queries = list()
     new_tables = list()
     new_vars = list()
-    for i in xrange(len(connected_components)):
+    for i in range(len(connected_components)):
         new_tables.append([tables[0][j] for j in connected_components[i]])
         new_vars.append([variables[0][j] for j in connected_components[i]])
     assert(len(new_tables) == len(new_vars))
-    for i in xrange(len(new_tables)):
+    for i in range(len(new_tables)):
         new_queries.append(Query([new_tables[i]], [new_vars[i]]))
     return new_queries
 
@@ -99,11 +98,11 @@ def split_by_connected_components_union_of_cnfs(tables, variables, connected_com
     new_queries = list()
     new_tables = list()
     new_vars = list()
-    for i in xrange(len(connected_components)):
+    for i in range(len(connected_components)):
         new_tables.append([tables[j] for j in connected_components[i]])
         new_vars.append([variables[j] for j in connected_components[i]])
     assert(len(new_tables) == len(new_vars))
-    for i in xrange(len(new_tables)):
+    for i in range(len(new_tables)):
         new_queries.append(Query(new_tables[i], new_vars[i]))
     return new_queries
 
@@ -112,7 +111,7 @@ def decompose_or(union_cnf_query):
     cnf_variables = [[variables] for variables in union_cnf_query.variables]
     assert(len(cnf_tables) == len(cnf_variables))
     cnf_queries = list()
-    for i in xrange(len(cnf_tables)):
+    for i in range(len(cnf_tables)):
         cnf_queries.append(Query(cnf_tables[i], cnf_variables[i]))
     return cnf_queries
 
