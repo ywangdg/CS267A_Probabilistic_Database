@@ -30,6 +30,16 @@ Helper function that operates on lists, dictionaries and pandas dataframes
 ###  file_create.py
 Create your own table and query file using this function
 
+## Test file description
+
+query1.txt: Single ground atom case <br />
+query2.txt: Conjunction with separator <br />
+query3.txt: Conjunction of independent queries <br />
+query4.txt: Disjunction of independent queries <br />
+query5.txt, query6.txt: Inclusion/Exclusion <br />
+query7.txt, query8.txt: Unliftable cases <br />
+query9.txt, query10.txt: Complex queries <br />
+
 ## Extension, can also be found in readme_nba.txt.
 The extension results can be obtained as follows.
 
