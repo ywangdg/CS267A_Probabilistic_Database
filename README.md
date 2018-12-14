@@ -45,3 +45,6 @@ qeval.py -t t_myteam.txt -q query_myteam.txt
 
 ###4. To run the fourth query ,to find the probability a player has scored 1000 points at least once in the last decade, run the following script.
 qeval.py -t t_thousand.txt -q query_thousand.txt
+
+## Final Report
+See the file CS_267_Project_Final_Report.pdf
