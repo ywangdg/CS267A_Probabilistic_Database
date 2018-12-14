@@ -10,7 +10,7 @@ To install the dependencies, run
 `pip install -r requirements.txt` for python2 and `pip3 install -r requirements.txt` for python3
 To ensure the code runs correctly, please make sure the version of pandas is  >=0.23.4 since the older version of pandas do not have the groupby() functions and the program will fail.
 
-## Program description
+## Program Description
 ### qeval.py
 qeval.py is the main logic file for the algorithm. It takes input of table files and query files in command line.
 
@@ -30,7 +30,7 @@ Helper function that operates on lists, dictionaries and pandas dataframes
 ###  file_create.py
 Create your own table and query file using this function
 
-## Test file description
+## Test File Description
 
 query1.txt: Single ground atom case <br />
 query2.txt: Conjunction with separator <br />
